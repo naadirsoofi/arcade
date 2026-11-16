@@ -1,0 +1,451 @@
+:root {
+    --sky: #cfeaf5;
+    --paper: #fff7e0;
+    --ink: #1d2433;
+    --muted: #47516a;
+    --accent: #ffd24a;
+    --accent-hover: #ffe489;
+    --accent-active: #f0b414;
+    --success: #8fe3b0;
+    --error: #c2331f;
+    --danger: #ff6b5e;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    background: var(--sky);
+    color: var(--ink);
+    font: 17px/1.45 "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.game {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+}
+
+.bar {
+    flex: none;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+    height: 52px;
+    padding: 0 10px;
+    background: var(--ink);
+    border-bottom: 4px solid var(--accent);
+    color: var(--paper);
+}
+
+.bar svg {
+    width: 20px;
+    height: 20px;
+}
+
+.bar a:focus-visible,
+.bar button:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.back {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px 5px 8px;
+    border-radius: 8px;
+    color: var(--paper);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back:hover {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.back:active {
+    background: var(--accent);
+    color: var(--ink);
+}
+
+.bar h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tools {
+    justify-self: end;
+    display: flex;
+    gap: 4px;
+}
+
+.tool {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 8px;
+    color: var(--paper);
+    cursor: pointer;
+}
+
+.tool:hover {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.tool:active {
+    background: var(--accent);
+    color: var(--ink);
+}
+
+.tool:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.tool .sound-off,
+.tool[aria-pressed="true"] .sound-on {
+    display: none;
+}
+
+.tool[aria-pressed="true"] .sound-off {
+    display: block;
+}
+
+.tool[aria-pressed="true"] {
+    color: var(--danger);
+}
+
+.stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: pointer;
+}
+
+.hud {
+    position: absolute;
+    inset: 12px 12px auto;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: start;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.stat {
+    justify-self: start;
+    display: flex;
+    flex-direction: column;
+    min-width: 76px;
+    padding: 4px 12px 6px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    box-shadow: 0 4px 0 var(--ink);
+    line-height: 1.1;
+}
+
+.stat.right {
+    justify-self: end;
+    align-items: flex-end;
+}
+
+.label {
+    color: var(--muted);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.value {
+    font-size: 30px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.middle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+/* The gauge track is the danger color: the safe zone covers its middle. */
+.tilt {
+    position: relative;
+    width: 132px;
+    height: 20px;
+    background: var(--danger);
+    border: 3px solid var(--ink);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.tilt-zone {
+    position: absolute;
+    inset: 0 17.5%;
+    background: var(--paper);
+}
+
+.tilt-needle {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 4px);
+    width: 8px;
+    height: 100%;
+    background: var(--ink);
+}
+
+.tilt-label {
+    padding: 0 10px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.tilt-label.streak {
+    background: var(--success);
+}
+
+.tilt-label.warn {
+    background: var(--danger);
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px 20px 22px 16px;
+    background: rgba(29, 36, 51, 0.55);
+    overflow-y: auto;
+}
+
+.card {
+    width: min(100%, 420px);
+    padding: 24px 22px 28px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 7px 7px 0 var(--ink);
+    text-align: center;
+}
+
+.card h2 {
+    margin: 0 0 8px;
+    font-size: 32px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.card.over h2 {
+    color: var(--error);
+}
+
+.card p {
+    margin: 0 0 14px;
+}
+
+.controls {
+    display: grid;
+    gap: 10px;
+    margin: 0 0 22px;
+    padding: 12px 14px;
+    background: var(--sky);
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    list-style: none;
+    text-align: left;
+}
+
+.controls li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.controls svg {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin-top: 1px;
+}
+
+.controls b {
+    display: block;
+    font-weight: 800;
+}
+
+.primary {
+    padding: 12px 30px;
+    background: var(--accent);
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    box-shadow: 0 5px 0 var(--ink);
+    color: var(--ink);
+    font: inherit;
+    font-size: 19px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.primary:hover {
+    background: var(--accent-hover);
+}
+
+.primary:active {
+    background: var(--accent-active);
+    box-shadow: 0 1px 0 var(--ink);
+    transform: translateY(4px);
+}
+
+.primary:focus-visible {
+    outline: 3px solid var(--error);
+    outline-offset: 4px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 14px;
+    background: var(--success);
+    border: 3px solid var(--ink);
+    border-radius: 8px;
+    font-weight: 800;
+}
+
+.result {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.05;
+}
+
+.result #final-score {
+    display: block;
+    font-size: 68px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.result .unit,
+#final-detail {
+    color: var(--muted);
+}
+
+.best-line {
+    font-size: 19px;
+}
+
+.best-line b {
+    font-weight: 800;
+}
+
+@media (max-width: 420px) {
+    .card {
+        padding: 20px 16px 24px;
+    }
+
+    .card h2 {
+        font-size: 28px;
+    }
+
+    .stat {
+        min-width: 68px;
+        padding: 3px 9px 5px;
+    }
+
+    .value {
+        font-size: 26px;
+    }
+
+    .tilt {
+        width: 116px;
+    }
+}
+
+@media (max-height: 520px) {
+    .overlay {
+        padding: 8px 16px;
+    }
+
+    .card {
+        width: min(100%, 660px);
+        padding: 12px 18px 16px;
+    }
+
+    .card h2 {
+        margin-bottom: 4px;
+        font-size: 24px;
+    }
+
+    .card p {
+        margin-bottom: 8px;
+    }
+
+    .controls {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 12px;
+        padding: 10px 14px;
+    }
+
+    .primary {
+        padding: 10px 28px;
+    }
+
+    .result #final-score {
+        display: inline;
+        font-size: 40px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .primary:active {
+        transform: none;
+    }
+}

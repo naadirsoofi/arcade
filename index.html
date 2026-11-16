@@ -6,37 +6,30 @@
     <title>Arcade | Naadir Soofi</title>
     <meta name="description" content="A growing collection of original browser games by Naadir Soofi. Free, no sign-up, playable on phone and desktop.">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="top">
-        <a class="brand" href="./">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="6" r="2.5"/><path d="M10 8.5V15"/><path d="M4 19v-2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2z"/><path d="M16 12h1.5"/></svg>
-            <span>Arcade</span>
-        </a>
-        <a class="back" href="https://naadirsoofi.com/playground.html">Back to Playground</a>
-    </header>
-    <div class="stripes" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="shell">
+        <aside>
+            <a class="brand" href="./">
+                <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="6" r="2.5"/><path d="M10 8.5V15"/><path d="M4 19v-2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2z"/><path d="M16 12h1.5"/></svg></span>
+                Arcade
+            </a>
+            <h1><span id="game-total">Original games.</span> <em>Zero installs.</em></h1>
+            <p class="lede">Original games, free to play on phone or desktop. No sign-up.</p>
+            <nav aria-label="Filter by category">
+                <ul class="cats" id="cats"></ul>
+            </nav>
+            <a class="back" href="https://naadirsoofi.com/playground.html">Back to Playground</a>
+        </aside>
 
-    <main>
-        <section class="hero">
-            <h1>Arcade</h1>
-            <p>Original browser games. Free, no sign-up, playable on phone and desktop.</p>
-            <p id="game-count" class="count"></p>
-        </section>
+        <main class="bento" id="grid"></main>
 
-        <section aria-label="Games">
-            <div id="game-grid" class="grid"></div>
-            <div id="empty" class="empty" hidden>
-                <h2>First games are on the way</h2>
-                <p>The cabinets are being wired up. Check back soon.</p>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>Built by <a href="https://naadirsoofi.com/">Naadir Soofi</a></p>
-    </footer>
+        <footer>Built by <a href="https://naadirsoofi.com/">Naadir Soofi</a></footer>
+    </div>
 
     <script src="games.js"></script>
     <script src="script.js"></script>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lantern Drift | Arcade</title>
+    <meta name="description" content="Lantern Drift is an endless night river run. Steer a paper lantern past rocks, drifting logs and reed beds, and catch fireflies to keep its light burning.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game" id="game" data-state="ready">
+        <header class="bar">
+            <a class="back" href="../../">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+                Arcade
+            </a>
+            <h1>Lantern Drift</h1>
+            <div class="tools">
+                <button type="button" class="tool" id="mute" aria-label="Mute sound" aria-pressed="false">
+                    <svg class="sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6"/><path d="M18 6.5a7.8 7.8 0 0 1 0 11"/></svg>
+                    <svg class="sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M16 9.5l5 5"/><path d="M21 9.5l-5 5"/></svg>
+                </button>
+                <button type="button" class="tool" id="pause" aria-label="Pause">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6v12"/><path d="M15 6v12"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="stage" id="stage">
+            <canvas id="canvas" role="img" aria-label="Lantern Drift playfield"></canvas>
+
+            <div class="hud">
+                <div class="stat">
+                    <span class="label">Score</span>
+                    <span class="value" id="score">0</span>
+                </div>
+                <div class="middle">
+                    <span class="label">Light</span>
+                    <div class="light" id="light" role="img" aria-label="Lantern light">
+                        <span class="light-fill" id="light-fill"></span>
+                    </div>
+                </div>
+                <div class="stat right">
+                    <span class="label">Best</span>
+                    <span class="value" id="best">0</span>
+                </div>
+            </div>
+
+            <div class="overlay" id="start-panel">
+                <section class="card" aria-labelledby="start-title">
+                    <h2 id="start-title">Lantern Drift</h2>
+                    <p>Steer your lantern down the night river. Dodge rocks, drifting logs and reed beds, and catch fireflies to keep the light burning.</p>
+                    <ul class="controls">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M8 14.5h8"/><path d="M6.5 10.5h.01"/><path d="M10.2 10.5h.01"/><path d="M13.8 10.5h.01"/><path d="M17.5 10.5h.01"/></svg>
+                            <span><b>Keyboard</b> Left and Right arrows, or A and D. P or Esc pauses.</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12h17"/><path d="M7.5 8l-4 4 4 4"/><path d="M16.5 8l4 4-4 4"/></svg>
+                            <span><b>Touch or mouse</b> Drag to steer, or hold the left or right side.</span>
+                        </li>
+                    </ul>
+                    <button type="button" class="primary" id="start">Set it afloat</button>
+                </section>
+            </div>
+
+            <div class="overlay" id="pause-panel" hidden>
+                <section class="card" aria-labelledby="pause-title">
+                    <h2 id="pause-title">Paused</h2>
+                    <p>The river is holding still. Press P, Esc or the button to carry on.</p>
+                    <button type="button" class="primary" id="resume">Resume</button>
+                </section>
+            </div>
+
+            <div class="overlay" id="over-panel" hidden>
+                <section class="card over" aria-labelledby="over-title">
+                    <h2 id="over-title">The light went out</h2>
+                    <p class="badge" id="new-best" hidden>New best</p>
+                    <p class="result"><span id="final-score">0</span> <span class="unit">points</span></p>
+                    <p id="final-detail"></p>
+                    <p class="best-line">Best <b id="final-best">0</b></p>
+                    <button type="button" class="primary" id="again">Play again</button>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

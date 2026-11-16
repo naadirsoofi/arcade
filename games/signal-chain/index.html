@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Signal Chain | Arcade</title>
+    <meta name="description" content="Signal Chain: watch five pads light up in a growing chain of lights and tones, then repeat it. Play it forwards or in Reverse. Free memory game for phone and desktop.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app" id="app" data-state="ready" data-mode="classic" data-phase="idle">
+        <header class="bar">
+            <a class="back" href="../../">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+                Arcade
+            </a>
+            <h1 class="name">Signal Chain</h1>
+            <div class="tools">
+                <button class="icon-btn" id="mute-btn" type="button" aria-label="Mute sound" aria-pressed="false">
+                    <svg class="sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6"/><path d="M18 6.5a7.8 7.8 0 0 1 0 11"/></svg>
+                    <svg class="sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4z"/><path d="M16 9.5l5 5"/><path d="M21 9.5l-5 5"/></svg>
+                </button>
+                <button class="icon-btn" id="pause-btn" type="button" aria-label="Pause" hidden>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5v14"/><path d="M15 5v14"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="stage">
+            <div class="board" id="board">
+                <div class="hud">
+                    <div class="stat side">
+                        <span class="stat-label">Mode</span>
+                        <span class="stat-value" id="mode-name">Classic</span>
+                    </div>
+                    <div class="stat round">
+                        <span class="stat-label">Round</span>
+                        <span class="stat-value" id="round">1</span>
+                    </div>
+                    <div class="stat side">
+                        <span class="stat-label">Best</span>
+                        <span class="stat-value" id="best">0</span>
+                    </div>
+                </div>
+
+                <p class="status" id="status" role="status">Watch the chain</p>
+
+                <div class="pads" id="pads" role="group" aria-label="Pads">
+                    <svg class="wire" viewBox="0 0 100 72" preserveAspectRatio="none" aria-hidden="true"><path d="M16 20.2L33 51.8 50 20.2 67 51.8 84 20.2"/></svg>
+                    <button class="pad" type="button" data-pad="0" aria-label="Pad 1, triangle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.5L20.5 19h-17z"/></svg>
+                        <span class="key">1</span>
+                    </button>
+                    <button class="pad" type="button" data-pad="1" aria-label="Pad 2, circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/></svg>
+                        <span class="key">2</span>
+                    </button>
+                    <button class="pad" type="button" data-pad="2" aria-label="Pad 3, square">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1.5"/></svg>
+                        <span class="key">3</span>
+                    </button>
+                    <button class="pad" type="button" data-pad="3" aria-label="Pad 4, plus">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.5v15"/><path d="M4.5 12h15"/></svg>
+                        <span class="key">4</span>
+                    </button>
+                    <button class="pad" type="button" data-pad="4" aria-label="Pad 5, zigzag">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16.5l4.5-9 4.5 9 4.5-9 4.5 9"/></svg>
+                        <span class="key">5</span>
+                    </button>
+                </div>
+
+                <div class="progress" id="progress" aria-hidden="true"></div>
+            </div>
+
+            <section class="overlay" id="start-screen" aria-labelledby="start-title">
+                <div class="card">
+                    <h2 id="start-title">Repeat the chain</h2>
+                    <p>Five pads light up in a chain, each with its own shape and tone. Repeat it, and every round it grows by one and plays a little faster.</p>
+
+                    <div class="modes" role="group" aria-label="Mode">
+                        <button class="mode" type="button" data-mode="classic" aria-pressed="true">
+                            <strong>Classic</strong>
+                            <span>Repeat the chain in the same order.</span>
+                            <span class="mode-best">Best: <b id="best-classic">no runs yet</b></span>
+                        </button>
+                        <button class="mode" type="button" data-mode="reverse" aria-pressed="false">
+                            <strong>Reverse</strong>
+                            <span>Repeat the chain backwards.</span>
+                            <span class="mode-best">Best: <b id="best-reverse">no runs yet</b></span>
+                        </button>
+                    </div>
+
+                    <ul class="controls">
+                        <li><strong>Keyboard:</strong> keys 1 to 5 press the pads. P or Escape pauses, M mutes.</li>
+                        <li><strong>Touch or mouse:</strong> tap the pads.</li>
+                    </ul>
+
+                    <button class="primary" id="start-btn" type="button">Start</button>
+                </div>
+            </section>
+
+            <section class="overlay" id="pause-screen" aria-labelledby="pause-title" hidden>
+                <div class="card">
+                    <h2 id="pause-title">Paused</h2>
+                    <p>Your progress is kept. If the chain was playing, it starts over when you resume.</p>
+                    <button class="primary" id="resume-btn" type="button">Resume</button>
+                </div>
+            </section>
+
+            <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+                <div class="card">
+                    <p class="new-best" id="new-best" hidden>New best</p>
+                    <h2 id="end-title">Chain broken</h2>
+                    <p class="final"><small>Round</small> <span id="end-round">1</span></p>
+                    <dl class="results">
+                        <div><dt>Longest chain repeated</dt><dd id="end-chain">0</dd></div>
+                        <div><dt>Mode</dt><dd id="end-mode">Classic</dd></div>
+                        <div><dt id="end-best-label">Best in Classic</dt><dd id="end-best">Round 1</dd></div>
+                    </dl>
+                    <div class="end-actions">
+                        <button class="primary" id="again-btn" type="button">Play again</button>
+                        <button class="ghost" id="mode-btn" type="button">Change mode</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

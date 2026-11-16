@@ -13,7 +13,7 @@ Plain HTML, CSS and JavaScript. No build step.
 ## Adding a game
 
 1. Create `games/<slug>/index.html` (plus its own CSS and JS in the same folder).
-2. Add an entry to `games.js`: `{ slug, title, blurb, tag, accent }`.
+2. Add an entry to `games.js`: `{ slug, title, tag, blurb, icon }`. The first entry is the featured game, and each distinct `tag` becomes a category filter.
 
 ## Local preview
 

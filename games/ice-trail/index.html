@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ice Trail | Arcade</title>
+    <meta name="description" content="Ice Trail is a free browser puzzle. Slide across the ice until a wall or rock stops you, and cover every tile to clear the level. Endless levels, playable on phone and desktop.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Ice Trail</h1>
+    </header>
+
+    <main id="game" data-state="ready">
+        <section class="card start" aria-labelledby="start-title">
+            <svg class="demo" viewBox="0 0 250 50" aria-hidden="true">
+                <rect class="demo-trail" x="2" y="2" width="46" height="46" rx="7"/>
+                <rect class="demo-trail" x="52" y="2" width="46" height="46" rx="7"/>
+                <rect class="demo-trail" x="102" y="2" width="46" height="46" rx="7"/>
+                <rect class="demo-ice" x="152" y="2" width="46" height="46" rx="7"/>
+                <rect class="demo-wall" x="202" y="2" width="46" height="46" rx="7"/>
+                <path class="demo-rock" d="M212 36l4-16 12-7 10 8 2 13-9 6z"/>
+                <circle class="demo-dot" cx="25" cy="25" r="5"/>
+                <circle class="demo-dot" cx="75" cy="25" r="5"/>
+                <circle class="demo-token" cx="125" cy="25" r="15"/>
+                <path class="demo-arrow" d="M163 25h22M178 18l7 7-7 7"/>
+            </svg>
+            <h2 id="start-title">Cover every tile of ice</h2>
+            <p>Pick a direction and you slide until a wall or rock stops you. Every tile you cross is marked. Mark them all to clear the level.</p>
+            <ul class="controls">
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M8 14h8"/></svg>
+                    <span><b>Keyboard:</b> Arrow keys or WASD to slide, Z to undo, R to restart.</span>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11.5V5a1.8 1.8 0 0 1 3.6 0v5.5l4.6 1.1a2.4 2.4 0 0 1 1.8 2.6l-.6 4.3a3 3 0 0 1-3 2.5h-3.2a3 3 0 0 1-2.4-1.2l-4-5.4a1.6 1.6 0 0 1 2.4-2z"/></svg>
+                    <span><b>Touch:</b> Swipe on the ice, or tap the arrow buttons.</span>
+                </li>
+            </ul>
+            <div class="picker">
+                <button type="button" class="step" id="level-down" aria-label="Previous level">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+                </button>
+                <p class="picked" aria-live="polite">Level <b id="pick-level">1</b></p>
+                <button type="button" class="step" id="level-up" aria-label="Next level">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+            <p class="reach" id="reach"></p>
+            <button type="button" class="btn primary" id="start-btn">Play level 1</button>
+        </section>
+
+        <section class="play" aria-label="Level">
+            <dl class="hud">
+                <div><dt>Level</dt><dd id="level">1</dd></div>
+                <div><dt>Moves</dt><dd id="moves">0</dd></div>
+                <div><dt>Time</dt><dd id="time">0:00</dd></div>
+                <div><dt>Ice left</dt><dd id="left">0</dd></div>
+            </dl>
+            <div class="stage" id="stage">
+                <div class="board" id="board"></div>
+            </div>
+            <div class="pad" role="group" aria-label="Slide">
+                <button type="button" class="arrow" data-dir="up" aria-label="Slide up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15l7-7 7 7"/></svg>
+                </button>
+                <button type="button" class="arrow" data-dir="left" aria-label="Slide left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+                </button>
+                <button type="button" class="arrow" data-dir="right" aria-label="Slide right">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+                </button>
+                <button type="button" class="arrow" data-dir="down" aria-label="Slide down">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>
+                </button>
+            </div>
+            <div class="tools">
+                <button type="button" class="btn" id="undo-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5L4 9l4 4"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+                    Undo <kbd>Z</kbd>
+                </button>
+                <button type="button" class="btn" id="restart-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4.5v4.6h4.6"/></svg>
+                    Restart <kbd>R</kbd>
+                </button>
+                <button type="button" class="btn" id="levels-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+                    Levels
+                </button>
+            </div>
+            <p class="sr-only" id="status" role="status"></p>
+        </section>
+
+        <section class="end" role="dialog" aria-modal="true" aria-labelledby="end-title">
+            <div class="card">
+                <p class="badge" id="end-badge" hidden>Fewest moves yet</p>
+                <h2 id="end-title">Level cleared</h2>
+                <p id="end-note"></p>
+                <dl class="result">
+                    <div><dt>Moves</dt><dd id="end-moves">0</dd></div>
+                    <div><dt>Time</dt><dd id="end-time">0:00</dd></div>
+                    <div><dt>Fewest</dt><dd id="end-best">0</dd></div>
+                </dl>
+                <button type="button" class="btn primary" id="next-btn">Next level</button>
+                <div class="end-more">
+                    <button type="button" class="btn" id="again-btn">Play again</button>
+                    <button type="button" class="btn" id="end-levels-btn">Levels</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="levels.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

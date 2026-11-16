@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Daily Maze | Arcade</title>
+    <meta name="description" content="One new maze every day, the same for everyone. Race the clock from the corner to the flag, keep your streak alive, and share your time.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Daily Maze</h1>
+    </header>
+
+    <main class="game" id="game" data-state="ready" data-mode="daily">
+        <div class="hud">
+            <div class="stat"><span>Time</span><b id="time">0:00.00</b></div>
+            <div class="stat"><span>Moves</span><b id="moves">0</b></div>
+            <button class="btn small" id="restart" type="button">Restart</button>
+            <button class="btn small" id="menu" type="button">Menu</button>
+        </div>
+
+        <p class="caption" id="caption"></p>
+
+        <div class="board" id="board">
+            <canvas id="maze" role="img" aria-label="Maze board. Use the arrow keys or the direction buttons to move."></canvas>
+        </div>
+
+        <div class="pad" aria-label="Direction buttons">
+            <button class="arrow" type="button" data-dir="up" aria-label="Move up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>
+            </button>
+            <button class="arrow" type="button" data-dir="left" aria-label="Move left">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            </button>
+            <button class="arrow" type="button" data-dir="down" aria-label="Move down">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>
+            </button>
+            <button class="arrow" type="button" data-dir="right" aria-label="Move right">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+            </button>
+        </div>
+
+        <section class="overlay" id="start-screen" aria-labelledby="start-title">
+            <div class="card">
+                <p class="eyebrow" id="start-eyebrow"></p>
+                <h2 id="start-title">Today's maze</h2>
+                <p>Guide the coral token from the top left corner to the teal flag. Everyone gets the same maze today, and the clock starts on your first move.</p>
+                <ul class="controls">
+                    <li><b>Keyboard</b> Arrow keys or WASD. Hold a key to run to the next junction.</li>
+                    <li><b>Touch</b> Swipe, drag the token, or use the arrow buttons.</li>
+                </ul>
+                <p class="streak" id="start-streak"></p>
+                <div class="actions">
+                    <button class="btn primary" id="start" type="button">Start today's maze</button>
+                    <button class="btn" id="start-practice" type="button">Practice maze</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+            <div class="card">
+                <p class="eyebrow" id="end-eyebrow"></p>
+                <h2 id="end-title">Maze solved</h2>
+                <p class="note" id="end-note"></p>
+                <dl class="results" id="results"></dl>
+                <div class="actions">
+                    <button class="btn primary" id="again" type="button">Run it again</button>
+                    <button class="btn" id="copy" type="button">Copy result</button>
+                    <button class="btn" id="switch" type="button">Practice maze</button>
+                </div>
+                <p class="copy-status" id="copy-status" role="status"></p>
+                <textarea class="copy-text" id="copy-text" rows="4" readonly hidden aria-label="Result text"></textarea>
+            </div>
+        </section>
+    </main>
+
+    <script src="game.js"></script>
+</body>
+</html>

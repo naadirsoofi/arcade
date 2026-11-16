@@ -1,0 +1,665 @@
+:root {
+    --bg: #14102b;
+    --panel: #1e1840;
+    --pad: #2a2258;
+    --pad-hover: #352b6e;
+    --edge: #6658c0;
+    --violet: #a393ff;
+    --violet-bright: #c9bfff;
+    --violet-deep: #8573ee;
+    --text: #f1edff;
+    --muted: #b7aedb;
+    --amber: #ffc857;
+    --mint: #6ff0b0;
+    --coral: #ff7482;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font: 500 17px/1.45 "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--amber);
+    outline-offset: 3px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.app {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+}
+
+/* Top bar */
+
+.bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    min-height: 54px;
+    padding: 6px 16px;
+    border-bottom: 2px solid var(--pad);
+}
+
+.back {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 6px 6px;
+    border-radius: 8px;
+    color: var(--text);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.back:hover {
+    background: var(--pad);
+}
+
+.back:active {
+    background: var(--pad-hover);
+}
+
+.name {
+    margin: 0;
+    color: var(--violet);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pause-btn {
+    justify-self: end;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--pad);
+    border: 2px solid var(--edge);
+    border-radius: 10px;
+}
+
+.pause-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.pause-btn:hover {
+    background: var(--pad-hover);
+    border-color: var(--violet);
+}
+
+.pause-btn:active {
+    background: var(--edge);
+}
+
+/* Board */
+
+.stage {
+    position: relative;
+    min-height: 0;
+}
+
+/* The grid is a square that fits both the width and the height left under the bar, HUD and status line. */
+.board {
+    --size: min(100vw - 32px, 100vh - 230px, 560px);
+    --size: min(100vw - 32px, 100dvh - 230px, 560px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 100%;
+    padding: 12px 16px;
+}
+
+.hud {
+    flex: none;
+    width: var(--size);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--panel);
+    border-radius: 14px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 6px;
+    line-height: 1.15;
+}
+
+.stat + .stat {
+    border-left: 2px solid var(--bg);
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.stat-value.lead {
+    color: var(--amber);
+}
+
+.field {
+    position: relative;
+    flex: none;
+    width: var(--size);
+    height: var(--size);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.pad {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    padding: 0;
+    background: var(--pad);
+    border: 2px solid var(--edge);
+    border-radius: 16px;
+    color: var(--muted);
+    font-size: 20px;
+    font-weight: 700;
+    touch-action: none;
+}
+
+/* Hover only where there is a real pointer, so a tapped pad does not stay highlighted. */
+@media (hover: hover) {
+    .pad:hover {
+        background: var(--pad-hover);
+    }
+}
+
+.pad:active {
+    transform: scale(0.95);
+}
+
+/* The lit pad also carries a solid target ring, so it does not rely on color alone. */
+.pad.lit {
+    background: var(--violet);
+    border-color: var(--violet-bright);
+    color: var(--bg);
+}
+
+.pad.lit::before {
+    content: "";
+    position: absolute;
+    inset: 16%;
+    border: 4px solid var(--bg);
+    border-radius: 50%;
+}
+
+.pad.hit {
+    background: var(--mint);
+    border-color: var(--mint);
+    color: var(--bg);
+}
+
+.pad.miss {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: var(--bg);
+}
+
+.float {
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    z-index: 2;
+    padding: 1px 8px;
+    transform: translateX(-50%);
+    border-radius: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: rise 0.7s ease-out forwards;
+}
+
+.float.hit {
+    background: var(--bg);
+    color: var(--mint);
+}
+
+.float.miss {
+    background: var(--bg);
+    color: var(--coral);
+}
+
+@keyframes rise {
+    from { transform: translate(-50%, 8px); }
+    70% { opacity: 1; }
+    to { transform: translate(-50%, -14px); opacity: 0; }
+}
+
+.countdown {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 112px;
+    transform: translate(-50%, -50%);
+    background: var(--amber);
+    border: 6px solid var(--bg);
+    border-radius: 50%;
+    color: var(--bg);
+    font-size: 60px;
+    font-weight: 700;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.status {
+    flex: none;
+    min-height: 26px;
+    margin: 0;
+    color: var(--muted);
+    text-align: center;
+}
+
+.status.good {
+    color: var(--mint);
+}
+
+.status.bad {
+    color: var(--coral);
+}
+
+/* Start, pause and end screens */
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    padding: 16px;
+    overflow-y: auto;
+    background: var(--bg);
+}
+
+.card {
+    width: 100%;
+    max-width: 520px;
+    margin: auto;
+    padding: 24px;
+    background: var(--panel);
+    border: 2px solid var(--edge);
+    border-radius: 20px;
+    text-align: center;
+}
+
+.card h2 {
+    margin: 0 0 8px;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.card p {
+    margin: 0 0 16px;
+    color: var(--muted);
+}
+
+.modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.mode {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 12px;
+    background: var(--bg);
+    border: 2px solid var(--edge);
+    border-radius: 14px;
+    color: var(--muted);
+    text-align: left;
+    line-height: 1.35;
+}
+
+.mode svg {
+    width: 26px;
+    height: 26px;
+    color: var(--violet);
+}
+
+.mode strong {
+    display: block;
+    color: var(--text);
+    font-size: 19px;
+}
+
+.mode:hover {
+    border-color: var(--violet);
+}
+
+.mode:active {
+    background: var(--pad);
+}
+
+.mode[aria-pressed="true"] {
+    background: var(--violet);
+    border-color: var(--violet-bright);
+    color: var(--bg);
+}
+
+.mode[aria-pressed="true"] svg,
+.mode[aria-pressed="true"] strong {
+    color: var(--bg);
+}
+
+/* A ring that fills in marks the chosen mode without relying on color. */
+.mode::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--edge);
+    border-radius: 50%;
+}
+
+.mode[aria-pressed="true"]::after {
+    background: var(--bg);
+    border: 5px solid var(--bg);
+    outline: 2px solid var(--bg);
+    outline-offset: 2px;
+}
+
+.controls {
+    margin: 0 0 4px;
+    padding: 0;
+    color: var(--muted);
+    list-style: none;
+    text-align: left;
+}
+
+.controls li {
+    padding: 8px 0;
+    border-top: 2px solid var(--pad);
+}
+
+.controls strong {
+    color: var(--text);
+}
+
+.records {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 0 0 18px;
+    padding-top: 12px;
+    border-top: 2px solid var(--pad);
+}
+
+.records div {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.records dt {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.records dd {
+    margin: 0;
+    color: var(--amber);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.primary {
+    min-width: 200px;
+    padding: 13px 26px;
+    background: var(--violet);
+    border: 0;
+    border-radius: 14px;
+    color: var(--bg);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.primary:hover {
+    background: var(--violet-bright);
+}
+
+.primary:active {
+    background: var(--violet-deep);
+    transform: scale(0.97);
+}
+
+.ghost {
+    min-width: 200px;
+    padding: 11px 26px;
+    background: none;
+    border: 2px solid var(--edge);
+    border-radius: 14px;
+    font-weight: 700;
+}
+
+.ghost:hover {
+    background: var(--pad);
+    border-color: var(--violet);
+}
+
+.ghost:active {
+    background: var(--edge);
+}
+
+.card .new-best {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 2px 14px;
+    background: var(--mint);
+    border-radius: 999px;
+    color: var(--bg);
+    font-weight: 700;
+}
+
+.card .final {
+    color: var(--amber);
+    font-size: 68px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.card .final small {
+    color: var(--muted);
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.results {
+    margin: 0 0 20px;
+    text-align: left;
+}
+
+.results div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 9px 0;
+    border-top: 2px solid var(--pad);
+}
+
+.results dt {
+    color: var(--muted);
+}
+
+.results dd {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.end-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Key hints only help where there is a keyboard. */
+@media (hover: none) and (pointer: coarse) {
+    .pad .key {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .board {
+        gap: 10px;
+    }
+
+    .grid {
+        gap: 8px;
+    }
+
+    .pad {
+        border-radius: 13px;
+    }
+
+    .stat-value {
+        font-size: 23px;
+    }
+
+    .card {
+        padding: 18px 16px 20px;
+    }
+
+    .card h2 {
+        font-size: 26px;
+    }
+
+    .card p {
+        margin-bottom: 12px;
+    }
+
+    .modes {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .mode {
+        padding: 10px 12px;
+    }
+
+    .mode svg {
+        display: none;
+    }
+
+    .mode::after {
+        top: 50%;
+        margin-top: -10px;
+    }
+
+    .mode-text {
+        padding-right: 30px;
+    }
+
+    .records {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .records div {
+        flex-direction: row;
+        align-items: baseline;
+        justify-content: space-between;
+        line-height: 1.5;
+    }
+
+    .controls li {
+        padding: 6px 0;
+    }
+
+    .card .records {
+        margin-bottom: 12px;
+        padding-top: 8px;
+    }
+
+    .card .final {
+        font-size: 58px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .float {
+        animation: none;
+    }
+
+    .pad:active,
+    .primary:active {
+        transform: none;
+    }
+}

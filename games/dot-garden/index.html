@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dot Garden | Arcade</title>
+    <meta name="description" content="Dot Garden is a free browser puzzle. Link each pair of matching flowers with a path, never cross another path, and fill the whole garden. Endless levels, playable on phone and desktop.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Dot Garden</h1>
+    </header>
+
+    <main id="game" data-state="ready">
+        <section class="card start" aria-labelledby="start-title">
+            <svg class="demo" viewBox="0 0 4 2" aria-hidden="true">
+                <rect class="plot" x=".04" y=".04" width=".92" height=".92" rx=".13" data-pair="0"/>
+                <rect class="plot" x="1.04" y=".04" width=".92" height=".92" rx=".13" data-pair="0"/>
+                <rect class="plot" x="2.04" y=".04" width=".92" height=".92" rx=".13" data-pair="0"/>
+                <rect class="plot" x="3.04" y=".04" width=".92" height=".92" rx=".13"/>
+                <rect class="plot" x=".04" y="1.04" width=".92" height=".92" rx=".13" data-pair="1"/>
+                <rect class="plot" x="1.04" y="1.04" width=".92" height=".92" rx=".13" data-pair="1"/>
+                <rect class="plot" x="2.04" y="1.04" width=".92" height=".92" rx=".13" data-pair="0"/>
+                <rect class="plot" x="3.04" y="1.04" width=".92" height=".92" rx=".13"/>
+                <polyline class="trail" points=".5,.5 2.5,.5 2.5,1.5" data-pair="0"/>
+                <polyline class="trail" points=".5,1.5 1.5,1.5" data-pair="1"/>
+                <g class="flower" data-pair="0" transform="translate(.5 .5)"><circle r=".37"/><g transform="translate(-.27 -.27) scale(.0225)"><path d="M12 21v-7"/><path d="M7 5l2.5 3L12 4l2.5 4L17 5v4a5 5 0 0 1-10 0z"/></g></g>
+                <g class="flower" data-pair="0" transform="translate(2.5 1.5)"><circle r=".37"/><g transform="translate(-.27 -.27) scale(.0225)"><path d="M12 21v-7"/><path d="M7 5l2.5 3L12 4l2.5 4L17 5v4a5 5 0 0 1-10 0z"/></g></g>
+                <g class="flower" data-pair="1" transform="translate(.5 1.5)"><circle r=".37"/><g transform="translate(-.27 -.27) scale(.0225)"><path d="M5 19C5 10 10 5 19 5c0 9-5 14-14 14z"/><path d="M5 19l8-8"/></g></g>
+                <g class="flower" data-pair="1" transform="translate(3.5 .5)"><circle r=".37"/><g transform="translate(-.27 -.27) scale(.0225)"><path d="M5 19C5 10 10 5 19 5c0 9-5 14-14 14z"/><path d="M5 19l8-8"/></g></g>
+            </svg>
+            <h2 id="start-title">Link every pair of flowers</h2>
+            <p>Draw a path between each pair of matching flowers. Paths cannot cross, and every plot must be filled.</p>
+            <ul class="controls">
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11.5V5a1.8 1.8 0 0 1 3.6 0v5.5l4.6 1.1a2.4 2.4 0 0 1 1.8 2.6l-.6 4.3a3 3 0 0 1-3 2.5h-3.2a3 3 0 0 1-2.4-1.2l-4-5.4a1.6 1.6 0 0 1 2.4-2z"/></svg>
+                    <span><b>Touch or mouse:</b> Drag from a flower to its match. Drag back to shorten a path.</span>
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M8 14h8"/></svg>
+                    <span><b>Keyboard:</b> Arrow keys move. Space or Enter picks up or drops a path, and arrows draw while it is held. R restarts.</span>
+                </li>
+            </ul>
+            <div class="picker">
+                <button type="button" class="step" id="level-down" aria-label="Previous level">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+                </button>
+                <p class="picked" aria-live="polite">Level <b id="pick-level">1</b><span id="pick-size"></span></p>
+                <button type="button" class="step" id="level-up" aria-label="Next level">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+                </button>
+            </div>
+            <p class="reach" id="reach"></p>
+            <button type="button" class="btn primary" id="start-btn">Play level 1</button>
+        </section>
+
+        <section class="play" aria-label="Garden">
+            <dl class="hud">
+                <div><dt>Level</dt><dd id="level">1</dd></div>
+                <div><dt>Pairs</dt><dd id="pairs">0/0</dd></div>
+                <div><dt>Filled</dt><dd id="filled">0%</dd></div>
+                <div><dt>Moves</dt><dd id="moves">0</dd></div>
+                <div><dt>Time</dt><dd id="time">0:00</dd></div>
+            </dl>
+            <svg class="board" id="board" role="img" aria-label="Garden grid"></svg>
+            <ul class="chips" id="chips" aria-label="Pairs linked"></ul>
+            <p class="status" id="status" role="status"></p>
+            <div class="actions">
+                <button type="button" class="btn" id="restart-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4.5v4.6h4.6"/></svg>
+                    Restart
+                </button>
+                <button type="button" class="btn" id="levels-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+                    Levels
+                </button>
+            </div>
+        </section>
+
+        <section class="end" role="dialog" aria-modal="true" aria-labelledby="end-title">
+            <div class="card">
+                <p class="badge" id="end-badge" hidden>New best time</p>
+                <h2 id="end-title">Garden in bloom</h2>
+                <p id="end-note"></p>
+                <dl class="result">
+                    <div><dt>Time</dt><dd id="end-time">0:00</dd></div>
+                    <div><dt>Moves</dt><dd id="end-moves">0</dd></div>
+                    <div><dt>Best</dt><dd id="end-best">0:00</dd></div>
+                </dl>
+                <button type="button" class="btn primary" id="next-btn">Next level</button>
+                <div class="end-more">
+                    <button type="button" class="btn" id="again-btn">Play again</button>
+                    <button type="button" class="btn" id="end-levels-btn">Levels</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="levels.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

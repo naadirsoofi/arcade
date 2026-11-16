@@ -1,0 +1,613 @@
+:root {
+    --bg: #0b1815;
+    --panel: #12261f;
+    --edge: #24443a;
+    --tile: #17302a;
+    --tile-hover: #1f3f36;
+    --tile-active: #2a5347;
+    --off: #62857a;
+    --mint: #8fe3b0;
+    --mint-hover: #b6f1cd;
+    --mint-active: #6ccb93;
+    --amber: #ffd24a;
+    --coral: #ff8663;
+    --text: #eaf6ef;
+    --muted: #a9c2b7;
+    --ink: #0b1815;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 500 17px/1.45 "Chakra Petch", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+h1,
+h2,
+p,
+dl,
+dd,
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--amber);
+    outline-offset: 3px;
+}
+
+.bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 20px;
+    border-bottom: 2px solid var(--edge);
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px 6px 8px;
+    border: 2px solid var(--edge);
+    border-radius: 8px;
+    color: var(--mint);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.back:hover {
+    border-color: var(--mint);
+    color: var(--mint-hover);
+}
+
+.back:active {
+    background: var(--tile-active);
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.bar h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+main {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.card {
+    width: min(100%, 520px);
+    padding: 24px;
+    background: var(--panel);
+    border: 2px solid var(--edge);
+    border-radius: 14px;
+}
+
+.card h2 {
+    font-size: 30px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.card p {
+    margin-top: 10px;
+    color: var(--muted);
+}
+
+/* Start screen */
+
+.start,
+.play,
+.end {
+    display: none;
+}
+
+[data-state="ready"] .start {
+    display: block;
+}
+
+[data-state="playing"] .play,
+[data-state="over"] .play {
+    display: flex;
+}
+
+[data-state="over"] .end {
+    display: grid;
+}
+
+.demo {
+    display: block;
+    width: 210px;
+    margin-bottom: 18px;
+}
+
+.demo-tile {
+    fill: var(--tile);
+    stroke: var(--bg);
+    stroke-width: 2;
+}
+
+.demo-wire {
+    stroke: var(--mint);
+    stroke-width: 14;
+}
+
+.demo-source {
+    fill: var(--coral);
+}
+
+.demo-bulb {
+    fill: var(--amber);
+}
+
+.demo-ring {
+    stroke: var(--amber);
+    stroke-width: 3;
+    opacity: 0.55;
+}
+
+.demo-glyph {
+    stroke: var(--ink);
+    stroke-width: 4;
+}
+
+.controls {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+    list-style: none;
+}
+
+.controls li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.controls svg {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin-top: 1px;
+    color: var(--mint);
+}
+
+.controls b {
+    font-weight: 700;
+}
+
+.sizes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.size {
+    display: grid;
+    gap: 2px;
+    padding: 10px 6px;
+    background: var(--tile);
+    border: 2px solid var(--edge);
+    border-radius: 10px;
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.size b {
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.size span {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.size:hover {
+    background: var(--tile-hover);
+    border-color: var(--off);
+}
+
+.size:active {
+    background: var(--tile-active);
+}
+
+.size[aria-pressed="true"] {
+    background: var(--tile-hover);
+    border-color: var(--mint);
+    box-shadow: inset 0 -4px 0 var(--mint);
+}
+
+.size[aria-pressed="true"] b {
+    color: var(--mint);
+}
+
+/* Buttons */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--panel);
+    border: 2px solid var(--edge);
+    border-radius: 10px;
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn svg {
+    flex: none;
+    width: 20px;
+    height: 20px;
+}
+
+.btn:hover {
+    background: var(--tile-hover);
+    border-color: var(--mint);
+}
+
+.btn:active {
+    background: var(--tile-active);
+}
+
+.btn.primary {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px 20px;
+    background: var(--mint);
+    border-color: var(--mint);
+    color: var(--ink);
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.btn.primary:hover {
+    background: var(--mint-hover);
+    border-color: var(--mint-hover);
+}
+
+.btn.primary:active {
+    background: var(--mint-active);
+    border-color: var(--mint-active);
+}
+
+.btn.quiet {
+    background: none;
+    border-color: transparent;
+    color: var(--mint);
+}
+
+.btn.quiet:hover {
+    background: var(--tile);
+    border-color: var(--edge);
+}
+
+/* Play screen */
+
+.play {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.board {
+    width: min(100%, 580px, max(250px, calc(100dvh - 276px)));
+}
+
+/* On short screens the board shrinks, but the counters and buttons keep a workable width. */
+.hud,
+.actions {
+    width: min(100%, 580px, max(390px, calc(100dvh - 276px)));
+}
+
+.hud {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.hud div {
+    padding: 6px 4px;
+    background: var(--panel);
+    border: 2px solid var(--edge);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.hud dt {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.hud dd {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+#bulbs {
+    color: var(--amber);
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(var(--n), 1fr);
+    aspect-ratio: 1;
+    background: var(--tile);
+    border: 3px solid var(--edge);
+    border-radius: 10px;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.cell {
+    position: relative;
+    padding: 0;
+    background: var(--tile);
+    border: 0;
+    box-shadow: inset 0 0 0 1px var(--bg);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+    .cell:hover {
+        background: var(--tile-hover);
+    }
+}
+
+.cell:active {
+    background: var(--tile-active);
+}
+
+.cell:focus-visible {
+    outline: 3px solid var(--amber);
+    outline-offset: -3px;
+    z-index: 1;
+}
+
+.cell svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.wires {
+    transform: rotate(calc(var(--turns) * 90deg));
+    transition: transform 0.16s ease-out;
+}
+
+.wires line {
+    stroke: var(--off);
+    stroke-width: 14;
+    stroke-linecap: round;
+    transition: stroke 0.12s;
+}
+
+.lit .wires line {
+    stroke: var(--mint);
+}
+
+.bulb {
+    fill: var(--tile);
+    stroke: var(--off);
+    stroke-width: 5;
+}
+
+.bulb-ring {
+    fill: none;
+    stroke: var(--amber);
+    stroke-width: 3;
+    opacity: 0;
+}
+
+.filament {
+    fill: none;
+    stroke: var(--off);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.lit .bulb {
+    fill: var(--amber);
+    stroke: var(--amber);
+}
+
+.lit .bulb-ring {
+    opacity: 0.6;
+}
+
+.lit .filament,
+.bolt {
+    stroke: var(--ink);
+}
+
+.source {
+    fill: var(--coral);
+}
+
+.bolt {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* A powered wire end that leads nowhere gets a coral cap. */
+.leak {
+    display: none;
+    fill: var(--coral);
+}
+
+.leak-n .dot-n,
+.leak-e .dot-e,
+.leak-s .dot-s,
+.leak-w .dot-w {
+    display: block;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.actions .btn {
+    flex: 1 1 auto;
+}
+
+.status {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+/* End screen */
+
+.end {
+    position: absolute;
+    inset: 0;
+    place-items: center;
+    padding: 16px;
+    background: rgba(11, 24, 21, 0.74);
+    animation: fade-in 0.35s ease-out 0.5s backwards;
+}
+
+.end .card {
+    border-color: var(--mint);
+    text-align: center;
+}
+
+.badge {
+    display: inline-block;
+    margin: 0 0 12px;
+    padding: 4px 14px;
+    background: var(--amber);
+    border-radius: 999px;
+    color: var(--ink);
+    font-weight: 700;
+}
+
+.card .badge {
+    margin-top: 0;
+    color: var(--ink);
+}
+
+.badge[hidden] {
+    display: none;
+}
+
+.result {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.result div {
+    padding: 10px 4px;
+    background: var(--tile);
+    border-radius: 10px;
+}
+
+.result dt {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.result dd {
+    font-size: 26px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.end .btn:not(.primary) {
+    margin-top: 10px;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .bar {
+        padding: 8px 12px;
+    }
+
+    main {
+        padding: 12px;
+        justify-content: flex-start;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .card h2 {
+        font-size: 26px;
+    }
+
+    .play {
+        gap: 12px;
+    }
+
+    .hud dd {
+        font-size: 20px;
+    }
+
+    .actions .btn {
+        padding: 10px 8px;
+    }
+
+    .actions .btn svg {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wires,
+    .wires line {
+        transition: none;
+    }
+
+    .end {
+        animation: none;
+    }
+}

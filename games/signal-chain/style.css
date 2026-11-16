@@ -1,0 +1,613 @@
+:root {
+    --bg: #1b1713;
+    --panel: #29231c;
+    --well: #120f0c;
+    --line: #4a3f31;
+    --edge: #8f7e64;
+    --text: #f8f0e2;
+    --muted: #cbbea8;
+    --yellow: #ffd24a;
+    --yellow-bright: #ffe184;
+    --yellow-deep: #e5b62a;
+    --good: #7be3a6;
+    --bad: #ff6a55;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 17px/1.45 "Rubik", system-ui, -apple-system, "Segoe UI", sans-serif;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--text);
+    outline-offset: 3px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.app {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+}
+
+/* Top bar */
+
+.bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+    min-height: 54px;
+    padding: 6px 16px;
+    background: var(--panel);
+}
+
+.back {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 6px 6px;
+    border-radius: 999px;
+    color: var(--text);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.back:hover {
+    background: var(--line);
+}
+
+.back:active {
+    background: var(--yellow);
+    color: var(--well);
+}
+
+.name {
+    margin: 0;
+    color: var(--yellow);
+    font-size: 20px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.tools {
+    justify-self: end;
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--bg);
+    border: 2px solid var(--edge);
+    border-radius: 50%;
+}
+
+.icon-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.icon-btn:hover {
+    border-color: var(--yellow);
+}
+
+.icon-btn:active {
+    background: var(--yellow);
+    color: var(--well);
+}
+
+.icon-btn .sound-off,
+.icon-btn[aria-pressed="true"] .sound-on {
+    display: none;
+}
+
+.icon-btn[aria-pressed="true"] .sound-off {
+    display: block;
+}
+
+.icon-btn[aria-pressed="true"] {
+    border-color: var(--bad);
+    color: var(--bad);
+}
+
+/* Board */
+
+.stage {
+    position: relative;
+    min-height: 0;
+}
+
+/* The pad area keeps a fixed shape and fits both the width and the height left under the bar and HUD. */
+.board {
+    --w: min(100vw - 32px, 600px, (100vh - 260px) / 0.72);
+    --w: min(100vw - 32px, 600px, (100dvh - 260px) / 0.72);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 100%;
+    padding: 12px 16px;
+}
+
+.hud {
+    flex: none;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 12px;
+    width: var(--w);
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.stat.round {
+    align-items: center;
+}
+
+.stat.side:last-child {
+    align-items: flex-end;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat.round .stat-value {
+    color: var(--yellow);
+    font-size: 46px;
+    line-height: 1;
+}
+
+.status {
+    flex: none;
+    min-height: 32px;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.app[data-phase="input"] .status {
+    color: var(--yellow);
+}
+
+.app[data-phase="won"] .status {
+    color: var(--good);
+}
+
+.app[data-phase="lost"] .status {
+    color: var(--bad);
+}
+
+.pads {
+    position: relative;
+    flex: none;
+    width: var(--w);
+    height: calc(var(--w) * 0.72);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.wire {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.wire path {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.pad {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    display: grid;
+    place-items: center;
+    width: 29%;
+    aspect-ratio: 1;
+    padding: 0;
+    transform: translate(-50%, -50%);
+    background: var(--well);
+    border: 5px solid var(--c);
+    border-radius: 50%;
+    color: var(--c);
+    touch-action: none;
+}
+
+.pad svg {
+    width: 46%;
+    height: 46%;
+    stroke-width: 2.2;
+}
+
+.pad .key {
+    position: absolute;
+    left: 50%;
+    bottom: 7%;
+    transform: translateX(-50%);
+    color: var(--muted);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.pad:nth-of-type(1) { --c: #ffd24a; --halo: rgba(255, 210, 74, 0.35); --x: 16%; --y: 28%; }
+.pad:nth-of-type(2) { --c: #ff8fb8; --halo: rgba(255, 143, 184, 0.35); --x: 33%; --y: 72%; }
+.pad:nth-of-type(3) { --c: #6ccbff; --halo: rgba(108, 203, 255, 0.35); --x: 50%; --y: 28%; }
+.pad:nth-of-type(4) { --c: #7be3a6; --halo: rgba(123, 227, 166, 0.35); --x: 67%; --y: 72%; }
+.pad:nth-of-type(5) { --c: #c9a2ff; --halo: rgba(201, 162, 255, 0.35); --x: 84%; --y: 28%; }
+
+/* Hover only where there is a real pointer, so a tapped pad does not stay highlighted. */
+@media (hover: hover) {
+    .app[data-phase="input"] .pad:hover {
+        background: var(--panel);
+    }
+}
+
+.pad.lit,
+.app[data-phase="input"] .pad:active {
+    background: var(--c);
+    box-shadow: 0 0 0 9px var(--halo);
+    color: var(--well);
+    transform: translate(-50%, -50%) scale(1.06);
+}
+
+.pad.lit .key,
+.app[data-phase="input"] .pad:active .key {
+    color: var(--well);
+}
+
+.pad.wrong {
+    background: var(--well);
+    border-color: var(--bad);
+    border-style: dashed;
+    box-shadow: none;
+    color: var(--bad);
+    transform: translate(-50%, -50%);
+}
+
+.app:not([data-phase="input"]) .pad {
+    cursor: default;
+}
+
+.progress {
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    width: var(--w);
+    min-height: 34px;
+    align-content: flex-start;
+}
+
+.progress i {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--edge);
+    border-radius: 50%;
+}
+
+.progress i.done {
+    background: var(--yellow);
+    border-color: var(--yellow);
+}
+
+/* Start, pause and end screens */
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    padding: 16px;
+    overflow-y: auto;
+    background: var(--bg);
+}
+
+.card {
+    width: 100%;
+    max-width: 520px;
+    margin: auto;
+    padding: 26px 24px;
+    background: var(--panel);
+    border-radius: 28px;
+    text-align: center;
+}
+
+.card h2 {
+    margin: 0 0 8px;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.card p {
+    margin: 0 0 16px;
+    color: var(--muted);
+}
+
+.modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.mode {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    background: var(--well);
+    border: 2px solid var(--edge);
+    border-radius: 18px;
+    color: var(--muted);
+    text-align: left;
+    line-height: 1.35;
+}
+
+.mode strong {
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.mode-best b {
+    color: var(--yellow);
+    font-weight: 700;
+}
+
+/* A ring that fills in marks the chosen mode without relying on color. */
+.mode::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--edge);
+    border-radius: 50%;
+}
+
+.mode:hover {
+    border-color: var(--yellow);
+}
+
+.mode:active {
+    background: var(--bg);
+}
+
+.mode[aria-pressed="true"] {
+    border-color: var(--yellow);
+    color: var(--text);
+}
+
+.mode[aria-pressed="true"]::after {
+    background: var(--yellow);
+    border: 4px solid var(--well);
+    outline: 2px solid var(--yellow);
+}
+
+.controls {
+    margin: 0 0 18px;
+    padding: 0;
+    color: var(--muted);
+    list-style: none;
+    text-align: left;
+}
+
+.controls li {
+    padding: 8px 0;
+    border-top: 2px solid var(--line);
+}
+
+.controls strong {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.primary {
+    min-width: 200px;
+    padding: 13px 28px;
+    background: var(--yellow);
+    border: 0;
+    border-radius: 999px;
+    color: var(--well);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.primary:hover {
+    background: var(--yellow-bright);
+}
+
+.primary:active {
+    background: var(--yellow-deep);
+    transform: scale(0.97);
+}
+
+.ghost {
+    min-width: 200px;
+    padding: 11px 28px;
+    background: none;
+    border: 2px solid var(--edge);
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.ghost:hover {
+    border-color: var(--yellow);
+}
+
+.ghost:active {
+    background: var(--well);
+}
+
+.card .new-best {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 2px 16px;
+    background: var(--good);
+    border-radius: 999px;
+    color: var(--well);
+    font-weight: 700;
+}
+
+.card .final {
+    color: var(--yellow);
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.card .final small {
+    color: var(--muted);
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.results {
+    margin: 0 0 20px;
+    text-align: left;
+}
+
+.results div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 9px 0;
+    border-top: 2px solid var(--line);
+}
+
+.results dt {
+    color: var(--muted);
+}
+
+.results dd {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.end-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Key hints only help where there is a keyboard. */
+@media (hover: none) and (pointer: coarse) {
+    .pad .key {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .bar {
+        grid-template-columns: auto 1fr auto;
+    }
+
+    .name {
+        justify-self: center;
+        font-size: 19px;
+    }
+
+    .pad {
+        border-width: 4px;
+    }
+
+    .pad.lit,
+    .app[data-phase="input"] .pad:active {
+        box-shadow: 0 0 0 6px var(--halo);
+    }
+
+    .card {
+        padding: 20px 16px 22px;
+    }
+
+    .card h2 {
+        font-size: 26px;
+    }
+
+    .modes {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .card .final {
+        font-size: 62px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pad.lit,
+    .app[data-phase="input"] .pad:active {
+        transform: translate(-50%, -50%);
+    }
+
+    .primary:active {
+        transform: none;
+    }
+}

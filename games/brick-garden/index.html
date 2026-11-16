@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Brick Garden | Arcade</title>
+    <meta name="description" content="A paddle and ball game where the bricks are garden plots. Break soil, bloom the seed plots, catch watering cans and bees, and clear ten hand-made gardens.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Brick Garden</h1>
+    </header>
+
+    <main class="game" id="game" data-state="ready">
+        <div class="hud">
+            <div class="stat"><span>Level</span><b id="level">1</b></div>
+            <div class="stat"><span>Score</span><b id="score">0</b></div>
+            <div class="stat wide-only"><span>Best</span><b id="best">0</b></div>
+            <div class="stat"><span>Lives</span><b id="lives">3</b></div>
+            <button class="btn small" id="pause" type="button">Pause</button>
+        </div>
+
+        <p class="status" id="status" role="status"></p>
+
+        <div class="board" id="board">
+            <canvas id="field" role="img" aria-label="Garden playfield. Move the plank with the arrow keys, the mouse or a finger, and press Space or tap to launch."></canvas>
+        </div>
+
+        <ul class="legend" aria-label="Things to catch">
+            <li><i class="dot water"></i>Watering can: a wider plank</li>
+            <li><i class="dot bee"></i>Bee: one more ball</li>
+            <li><i class="dot snail"></i>Snail: a slower ball</li>
+        </ul>
+
+        <section class="overlay" id="start-screen" aria-labelledby="start-title">
+            <div class="card">
+                <h2 id="start-title">Tend the garden</h2>
+                <p>Bounce the ball off your plank to clear every plot. Soil breaks in one hit, seed plots sprout and then bloom, and stone edging never breaks.</p>
+                <p>Catch what falls: the watering can widens the plank, the bee adds a ball, and the snail slows the ball down.</p>
+                <ul class="controls">
+                    <li><b>Keyboard</b> Arrow keys or A and D to move, Space to launch, P or Escape to pause.</li>
+                    <li><b>Touch and mouse</b> Drag or move to steer the plank, tap or click to launch.</li>
+                </ul>
+                <p class="note" id="start-best"></p>
+                <button class="btn primary" id="start" type="button">Start gardening</button>
+            </div>
+        </section>
+
+        <section class="overlay" id="pause-screen" aria-labelledby="pause-title" hidden>
+            <div class="card compact">
+                <h2 id="pause-title">Paused</h2>
+                <p>The garden will wait.</p>
+                <button class="btn primary" id="resume" type="button">Resume</button>
+            </div>
+        </section>
+
+        <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+            <div class="card">
+                <h2 id="end-title">Garden over</h2>
+                <p id="end-reason"></p>
+                <p class="note" id="end-note"></p>
+                <dl class="results">
+                    <div><dt>Score</dt><dd id="end-score">0</dd></div>
+                    <div><dt>Best score</dt><dd id="end-best">0</dd></div>
+                    <div><dt>Level reached</dt><dd id="end-level">1</dd></div>
+                    <div><dt>Furthest level</dt><dd id="end-furthest">1</dd></div>
+                </dl>
+                <button class="btn primary" id="again" type="button">Play again</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="game.js"></script>
+</body>
+</html>

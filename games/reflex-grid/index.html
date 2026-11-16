@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reflex Grid | Arcade</title>
+    <meta name="description" content="Reflex Grid: hit the lit pad on a 4 by 4 grid as fast as you can. Play a 30 second Sprint or measure your reaction time in milliseconds.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app" id="app" data-state="ready" data-mode="sprint">
+        <header class="bar">
+            <a class="back" href="../../">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+                Arcade
+            </a>
+            <h1 class="name">Reflex Grid</h1>
+            <button class="pause-btn" id="pause-btn" type="button" aria-label="Pause" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5v14"/><path d="M15 5v14"/></svg>
+            </button>
+        </header>
+
+        <main class="stage">
+            <div class="board" id="board">
+                <div class="hud">
+                    <div class="stat">
+                        <span class="stat-label" id="first-label">Time</span>
+                        <span class="stat-value lead" id="first-value">30.0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label" id="second-label">Hits</span>
+                        <span class="stat-value" id="second-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Last hit</span>
+                        <span class="stat-value" id="last-value">0 ms</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="grid" id="grid" role="group" aria-label="Pads"></div>
+                    <div class="countdown" id="countdown" aria-hidden="true" hidden>3</div>
+                </div>
+
+                <p class="status" id="status" role="status"></p>
+            </div>
+
+            <section class="overlay" id="start-screen" aria-labelledby="start-title">
+                <div class="card">
+                    <h2 id="start-title">Hit the lit pad</h2>
+                    <p>One pad lights up. Hit it as fast as you can and keep off the dark ones.</p>
+
+                    <div class="modes" role="group" aria-label="Mode">
+                        <button class="mode" type="button" data-mode="sprint" aria-pressed="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5"/><path d="M9.5 3h5"/><path d="M12 3v3"/></svg>
+                            <span class="mode-text"><strong>Sprint</strong> Most hits in 30 seconds. A wrong pad costs 1 second.</span>
+                        </button>
+                        <button class="mode" type="button" data-mode="reaction" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2.5L5 13.5h6l-1 8 8-11h-6z"/></svg>
+                            <span class="mode-text"><strong>Reaction</strong> 10 targets, each after a random wait. Hitting early is a false start.</span>
+                        </button>
+                    </div>
+
+                    <ul class="controls">
+                        <li><strong>Keyboard:</strong> rows 1234, QWER, ASDF, ZXCV. P or Escape pauses.</li>
+                        <li><strong>Touch or mouse:</strong> tap the lit pad.</li>
+                    </ul>
+
+                    <dl class="records">
+                        <div><dt>Best Sprint</dt><dd id="best-sprint">0</dd></div>
+                        <div><dt>Best average</dt><dd id="best-average">0</dd></div>
+                        <div><dt>Lifetime hits</dt><dd id="lifetime">0</dd></div>
+                    </dl>
+
+                    <button class="primary" id="start-btn" type="button">Start</button>
+                </div>
+            </section>
+
+            <section class="overlay" id="pause-screen" aria-labelledby="pause-title" hidden>
+                <div class="card">
+                    <h2 id="pause-title">Paused</h2>
+                    <p>The clock is stopped. A short countdown runs before the next pad lights.</p>
+                    <button class="primary" id="resume-btn" type="button">Resume</button>
+                </div>
+            </section>
+
+            <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+                <div class="card">
+                    <p class="new-best" id="new-best" hidden>New best</p>
+                    <h2 id="end-title">Sprint over</h2>
+                    <p class="final"><span id="end-value">0</span> <small id="end-unit">hits</small></p>
+                    <dl class="results" id="end-rows"></dl>
+                    <div class="end-actions">
+                        <button class="primary" id="again-btn" type="button">Play again</button>
+                        <button class="ghost" id="mode-btn" type="button">Change mode</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
