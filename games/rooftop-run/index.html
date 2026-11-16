@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rooftop Run | Arcade</title>
+    <meta name="description" content="An endless rooftop sprint. Jump the gaps and the rooftop clutter, slide under the billboards, and collect letters as the pace picks up.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Rooftop Run</h1>
+    </header>
+
+    <main class="game" id="game" data-state="ready">
+        <div class="hud">
+            <div class="stat"><span>Score</span><b id="score">0</b></div>
+            <div class="stat"><span>Letters</span><b id="letters">0</b></div>
+            <div class="stat"><span>Best</span><b id="best">0</b></div>
+            <button class="btn small" id="pause" type="button">Pause</button>
+        </div>
+
+        <div class="board" id="board">
+            <canvas id="field" role="img" aria-label="City rooftops. The courier runs on its own: jump the gaps and clutter, slide under the billboards."></canvas>
+        </div>
+
+        <section class="overlay" id="start-screen" aria-labelledby="start-title">
+            <div class="card">
+                <h2 id="start-title">Special delivery</h2>
+                <p>The courier runs on its own and keeps speeding up. Jump the gaps and the rooftop clutter, slide under the billboards, and grab letters for 25 bonus points each.</p>
+                <ul class="controls">
+                    <li><b>Keyboard</b> Space or Up jumps (hold to go higher). Down slides. P or Escape pauses.</li>
+                    <li><b>Touch</b> Tap anywhere to jump (hold to go higher). Slide a finger down to duck, back up to jump.</li>
+                </ul>
+                <p class="note" id="start-best"></p>
+                <button class="btn primary" id="start" type="button">Start running</button>
+            </div>
+        </section>
+
+        <section class="overlay" id="pause-screen" aria-labelledby="pause-title" hidden>
+            <div class="card compact">
+                <h2 id="pause-title">Paused</h2>
+                <p>Catching a breath on the ledge.</p>
+                <button class="btn primary" id="resume" type="button">Resume</button>
+            </div>
+        </section>
+
+        <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+            <div class="card">
+                <h2 id="end-title">Run over</h2>
+                <p id="end-reason"></p>
+                <p class="note" id="end-note"></p>
+                <dl class="results">
+                    <div><dt>Score</dt><dd id="end-score">0</dd></div>
+                    <div><dt>Best score</dt><dd id="end-best">0</dd></div>
+                    <div><dt>Distance</dt><dd id="end-distance">0 m</dd></div>
+                    <div><dt>Longest run</dt><dd id="end-far">0 m</dd></div>
+                </dl>
+                <button class="btn primary" id="again" type="button">Play again</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="game.js"></script>
+</body>
+</html>

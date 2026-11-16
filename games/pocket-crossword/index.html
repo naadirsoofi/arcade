@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pocket Crossword | Arcade</title>
+    <meta name="description" content="Pocket Crossword: bite-size five by five crosswords you can finish in a few minutes. A new puzzle every day, plus a list of more to solve, for phone and desktop.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app" id="app" data-state="ready">
+        <header class="bar">
+            <a class="back" href="../../">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+                Arcade
+            </a>
+            <h1 class="name">Pocket Crossword</h1>
+        </header>
+
+        <main class="stage">
+            <div class="play" id="play">
+                <div class="hud">
+                    <button class="hud-btn" id="list-btn" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/></svg>
+                        Puzzles
+                    </button>
+                    <p class="title"><span id="puzzle-name">Puzzle 1</span> <span class="tag" id="today-tag" hidden>Today</span></p>
+                    <p class="clock">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+                        <span id="time">0:00</span>
+                    </p>
+                </div>
+
+                <div class="board">
+                    <div class="grid-wrap">
+                        <div class="grid" id="grid" tabindex="0" role="group" aria-label="Crossword grid. Type letters, arrows move, Tab jumps to the next clue."></div>
+                    </div>
+                    <div class="clue-lists">
+                        <section>
+                            <h2>Across</h2>
+                            <ol id="across-list"></ol>
+                        </section>
+                        <section>
+                            <h2>Down</h2>
+                            <ol id="down-list"></ol>
+                        </section>
+                    </div>
+                </div>
+
+                <div class="cluebar">
+                    <button class="step" id="prev-btn" type="button" aria-label="Previous clue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+                    </button>
+                    <p class="clue" id="clue" aria-live="polite"><strong id="clue-label">1 Across</strong> <span id="clue-text"></span></p>
+                    <button class="step" id="next-btn" type="button" aria-label="Next clue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+                    </button>
+                </div>
+
+                <p class="msg" id="msg" role="status"></p>
+
+                <div class="tools" id="tools">
+                    <button class="tool" id="check-btn" type="button">Check <br>letters</button>
+                    <button class="tool" id="reveal-letter-btn" type="button">Reveal <br>letter</button>
+                    <button class="tool" id="reveal-word-btn" type="button">Reveal <br>word</button>
+                    <button class="tool" id="clear-btn" type="button">Clear <br>grid</button>
+                </div>
+
+                <div class="keys" id="keys" role="group" aria-label="Letter keys"></div>
+            </div>
+
+            <section class="overlay" id="start-screen" aria-labelledby="start-title">
+                <div class="card">
+                    <div class="sample" aria-hidden="true"><span>M</span><span>I</span><span class="lit">N</span><span>I</span><span class="dark"></span></div>
+                    <h2 id="start-title">Five squares by five</h2>
+                    <p>Fill the grid so every across and down answer fits its clue. There is a new puzzle every day and more in the list.</p>
+                    <ul class="controls">
+                        <li><strong>Touch or mouse:</strong> tap a square to pick it, tap it again to switch between across and down, then tap the letter keys.</li>
+                        <li><strong>Keyboard:</strong> type to fill, arrows move, Tab jumps clues, Space switches direction, Escape reaches the tools.</li>
+                    </ul>
+                    <p class="record" id="start-record"></p>
+                    <button class="primary" id="start-btn" type="button">Play today's puzzle</button>
+                    <button class="ghost" id="browse-btn" type="button">All puzzles</button>
+                </div>
+            </section>
+
+            <section class="overlay" id="list-screen" aria-labelledby="list-title" hidden>
+                <div class="card wide">
+                    <h2 id="list-title">All puzzles</h2>
+                    <p class="record" id="list-record"></p>
+                    <ol class="puzzle-list" id="puzzle-list"></ol>
+                    <button class="ghost" id="list-back-btn" type="button">Back</button>
+                </div>
+            </section>
+
+            <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+                <div class="card">
+                    <p class="new-best" id="new-best" hidden>New best time</p>
+                    <h2 id="end-title">Solved!</h2>
+                    <p class="final" id="end-time">0:00</p>
+                    <dl class="results">
+                        <div><dt>Best time for this puzzle</dt><dd id="end-best">0:00</dd></div>
+                        <div><dt>Help used</dt><dd id="end-help">None</dd></div>
+                        <div><dt>Puzzles solved</dt><dd id="end-count">0 of 0</dd></div>
+                    </dl>
+                    <p class="record" id="end-next"></p>
+                    <button class="primary" id="again-btn" type="button">Play again</button>
+                    <button class="ghost" id="end-list-btn" type="button">All puzzles</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="puzzles.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

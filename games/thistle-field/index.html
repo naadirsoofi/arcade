@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thistle Field | Arcade</title>
+    <meta name="description" content="Thistle Field is a free browser deduction puzzle. Use the number clues to uncover every safe tile of the meadow without touching a thistle. Three sizes, playable on phone and desktop.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <svg class="defs" aria-hidden="true">
+        <symbol id="icon-thistle" viewBox="0 0 24 24">
+            <path d="M12 21.5v-8"/>
+            <path d="M12 18.5c-2.4.2-4-.8-4.6-2.8"/>
+            <path d="M12 16.5c2.4.2 4-.8 4.6-2.8"/>
+            <path d="M8.6 13.5c-1.2-3.4.4-5.6 3.4-5.6s4.6 2.2 3.4 5.6z"/>
+            <path d="M9.4 8.6L7.6 5M12 7.9V3.2M14.6 8.6L16.4 5M8.2 10.6L5 9.4M15.8 10.6L19 9.4"/>
+        </symbol>
+        <symbol id="icon-mark" viewBox="0 0 24 24">
+            <path d="M8 21.5V3.5"/>
+            <path d="M8 4.5h10l-3 4 3 4H8"/>
+        </symbol>
+        <symbol id="icon-wrong" viewBox="0 0 24 24">
+            <path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>
+        </symbol>
+        <symbol id="icon-trowel" viewBox="0 0 24 24">
+            <path d="M14.5 3.5l6 6-2.6 2.6-6-6z"/>
+            <path d="M13.2 10.8l-2.7 2.7"/>
+            <path d="M11.5 12.5c-3-1-7 1.5-8 8 6.5-1 9-5 8-8z"/>
+        </symbol>
+    </svg>
+
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Thistle Field</h1>
+    </header>
+
+    <main id="game" data-state="ready" data-tool="uncover">
+        <section class="card start" aria-labelledby="start-title">
+            <h2 id="start-title">Clear the meadow</h2>
+            <p>Uncover every safe tile. A number tells how many of the eight tiles around it hide a thistle. Touch a thistle and the round is over.</p>
+            <ul class="controls">
+                <li><b>Touch:</b> tap to uncover, long-press to mark, or flip the Uncover / Mark switch.</li>
+                <li><b>Mouse:</b> left click uncovers, right click marks.</li>
+                <li><b>Keyboard:</b> arrows move, Enter or Space uncovers, F marks.</li>
+            </ul>
+            <div class="sizes" role="group" aria-label="Meadow size">
+                <button type="button" class="size" data-size="small" aria-pressed="false">Small<small>9 thistles</small></button>
+                <button type="button" class="size" data-size="medium" aria-pressed="false">Medium<small>16 thistles</small></button>
+                <button type="button" class="size" data-size="large" aria-pressed="false">Large<small>24 thistles</small></button>
+            </div>
+            <p class="best-line" id="start-best"></p>
+            <button type="button" class="btn primary" id="start-btn">Start</button>
+        </section>
+
+        <section class="play" aria-label="Meadow">
+            <div class="hud">
+                <p class="stat" title="Thistles left">
+                    <svg class="line-icon" aria-hidden="true"><use href="#icon-thistle"/></svg>
+                    <span class="sr-only">Thistles left:</span><b id="left">0</b>
+                </p>
+                <p class="stat" title="Time">
+                    <svg viewBox="0 0 24 24" class="line-icon" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9.5 2.5h5"/></svg>
+                    <span class="sr-only">Time:</span><b id="time">0:00</b>
+                </p>
+                <button type="button" class="btn" id="new-btn">New</button>
+                <button type="button" class="btn" id="menu-btn">Menu</button>
+            </div>
+            <div class="board" id="board" role="group" aria-label="Meadow tiles"></div>
+            <div class="switch" role="group" aria-label="Tap action">
+                <button type="button" class="tool" data-tool="uncover" aria-pressed="true">
+                    <svg class="line-icon" aria-hidden="true"><use href="#icon-trowel"/></svg>
+                    Uncover
+                </button>
+                <button type="button" class="tool" data-tool="mark" aria-pressed="false">
+                    <svg class="line-icon" aria-hidden="true"><use href="#icon-mark"/></svg>
+                    Mark
+                </button>
+            </div>
+            <button type="button" class="btn primary" id="peek-again-btn">Play again</button>
+            <p class="sr-only" id="status" role="status"></p>
+        </section>
+
+        <section class="end" role="dialog" aria-modal="true" aria-labelledby="end-title">
+            <div class="card">
+                <p class="badge" id="end-badge" hidden>New best time</p>
+                <h2 id="end-title">Meadow cleared</h2>
+                <p id="end-note"></p>
+                <dl class="result">
+                    <div><dt>Time</dt><dd id="end-time">0:00</dd></div>
+                    <div><dt>Best</dt><dd id="end-best">0:00</dd></div>
+                </dl>
+                <button type="button" class="btn primary" id="again-btn">Play again</button>
+                <div class="end-more">
+                    <button type="button" class="btn" id="peek-btn">View meadow</button>
+                    <button type="button" class="btn" id="end-menu-btn">Change size</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="engine.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

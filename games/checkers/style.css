@@ -1,0 +1,591 @@
+:root {
+    --paper: #fff6d8;
+    --card: #fffdf2;
+    --ink: #23261c;
+    --muted: #595c48;
+    --line: #d8cc98;
+    --yellow: #ffd24a;
+    --yellow-hover: #ffdd75;
+    --yellow-active: #f0bd1c;
+    --butter-hover: #f7ebbd;
+    --butter-active: #eedd9c;
+    --success: #1c7648;
+    --error: #b3261e;
+    --sq-dark: #2f7a5a;
+    --sq-dark-last: #55a680;
+    --sq-light: #f8ebb8;
+    --red: #e4553e;
+    --red-edge: #9c2a19;
+    --slate: #323744;
+    --slate-edge: #0e1015;
+    --slate-ring: #b3b9c9;
+    /* The board is as wide as the phone allows, or as tall as what is left under the other rows. */
+    --board: min(100vw - 32px, 100dvh - 268px);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 540px;
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 17px/1.4 "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    touch-action: manipulation;
+}
+
+a,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+.board:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 48px;
+    padding: 0 12px;
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 6px 6px;
+    border-radius: 10px;
+    color: var(--yellow);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.back:hover {
+    background: #363a2c;
+}
+
+.back:active {
+    background: #474b3a;
+}
+
+.back:focus-visible {
+    outline-color: var(--yellow);
+}
+
+.bar h1 {
+    margin: 0;
+    padding-left: 14px;
+    border-left: 2px solid #474b3a;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.game {
+    position: relative;
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    justify-items: center;
+    gap: 8px;
+    min-height: 0;
+    padding: 8px 12px 10px;
+}
+
+.game > .status,
+.game > .seat,
+.game > .controls {
+    width: calc(var(--board) + 8px);
+}
+
+.status {
+    margin: 0;
+    min-height: 26px;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 26px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.game[data-state="over"] .status {
+    color: var(--success);
+}
+
+.seat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 28px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.seat .name {
+    font-weight: 500;
+}
+
+.seat.active {
+    color: var(--ink);
+}
+
+.seat.active .name {
+    font-weight: 800;
+}
+
+.turn-dot {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+}
+
+.seat.active .turn-dot {
+    background: var(--yellow);
+    border-color: var(--ink);
+}
+
+.tally {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+}
+
+.tally b {
+    color: var(--ink);
+    font-weight: 800;
+}
+
+.mini {
+    width: 24px;
+    height: 24px;
+}
+
+/* Pieces: a disc with a thick edge. Red has a solid ring, Black a dashed one, and a king wears a crown. */
+.piece svg,
+.mini svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.red .top {
+    fill: var(--red);
+}
+
+.red .edge {
+    fill: var(--red-edge);
+}
+
+.black .top {
+    fill: var(--slate);
+}
+
+.black .edge {
+    fill: var(--slate-edge);
+}
+
+.ring {
+    fill: none;
+    stroke-width: 4;
+}
+
+.red .ring {
+    stroke: var(--red-edge);
+}
+
+.black .ring {
+    stroke: var(--slate-ring);
+    stroke-dasharray: 9 8;
+    stroke-linecap: round;
+}
+
+.crown {
+    fill: var(--yellow);
+    stroke: var(--slate-edge);
+    stroke-width: 3;
+    stroke-linejoin: round;
+}
+
+.board {
+    position: relative;
+    width: calc(var(--board) + 8px);
+    height: calc(var(--board) + 8px);
+    border: 4px solid var(--ink);
+    border-radius: 10px;
+    box-shadow: 5px 5px 0 var(--ink);
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+}
+
+.squares {
+    display: grid;
+    grid-template: repeat(8, 1fr) / repeat(8, 1fr);
+    width: 100%;
+    height: 100%;
+}
+
+.sq {
+    position: relative;
+}
+
+.sq.light {
+    background: var(--sq-light);
+}
+
+.sq.dark {
+    background: var(--sq-dark);
+}
+
+.sq.last {
+    background: var(--sq-dark-last);
+}
+
+.sq.selected {
+    box-shadow: inset 0 0 0 3px var(--card);
+}
+
+/* A dot marks a square the selected piece can go to. */
+.sq.target::after {
+    content: "";
+    position: absolute;
+    inset: 32%;
+    border-radius: 50%;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+}
+
+.sq.drop {
+    background: var(--yellow);
+}
+
+.sq.cursor {
+    box-shadow: inset 0 0 0 3px var(--ink), inset 0 0 0 6px var(--yellow);
+}
+
+.pieces {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.piece {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12.5%;
+    height: 12.5%;
+    padding: 0.7%;
+}
+
+/* A yellow ring marks every piece that has to jump. */
+.piece.must::before {
+    content: "";
+    position: absolute;
+    inset: 3%;
+    border: 3px solid var(--yellow);
+    border-radius: 50%;
+    animation: beckon 1.1s ease-in-out infinite alternate;
+}
+
+@keyframes beckon {
+    from { transform: scale(1); }
+    to { transform: scale(1.08); }
+}
+
+.piece.jumped {
+    opacity: 0.35;
+}
+
+.piece.dragging {
+    z-index: 3;
+}
+
+.piece.dragging svg {
+    transform: scale(1.25);
+    filter: drop-shadow(0 5px 0 rgba(14, 16, 21, 0.3));
+}
+
+.piece.dragging::before {
+    display: none;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 12px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.btn svg {
+    flex: none;
+    width: 20px;
+    height: 20px;
+}
+
+.btn:hover {
+    background: var(--butter-hover);
+}
+
+.btn:active {
+    background: var(--butter-active);
+}
+
+.btn:disabled {
+    border-color: var(--line);
+    color: #8d8a6c;
+    background: var(--paper);
+    cursor: default;
+}
+
+.btn.primary {
+    background: var(--yellow);
+}
+
+.btn.primary:hover {
+    background: var(--yellow-hover);
+}
+
+.btn.primary:active {
+    background: var(--yellow-active);
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: grid;
+    place-items: center;
+    padding: 14px;
+    background: rgba(255, 246, 216, 0.94);
+    overflow-y: auto;
+}
+
+#end-screen {
+    background: rgba(255, 246, 216, 0.8);
+}
+
+.card {
+    width: 100%;
+    max-width: 430px;
+    padding: 20px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 18px;
+    box-shadow: 6px 6px 0 var(--ink);
+}
+
+.card > * {
+    margin: 0 0 12px;
+}
+
+.card > :last-child {
+    margin-bottom: 0;
+}
+
+.card h2 {
+    font-size: 32px;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.eyebrow {
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.eyebrow + h2 {
+    margin-top: -8px;
+}
+
+.card[data-result="win"] h2 {
+    color: var(--success);
+}
+
+.card[data-result="loss"] h2 {
+    color: var(--error);
+}
+
+.howto {
+    display: grid;
+    gap: 6px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border-radius: 12px;
+    list-style: none;
+}
+
+.howto b {
+    display: block;
+    font-weight: 700;
+}
+
+.option {
+    display: flex;
+    gap: 6px;
+}
+
+.choice {
+    flex: 1;
+    min-height: 44px;
+    padding: 0 8px;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.choice:hover {
+    background: var(--butter-hover);
+}
+
+.choice:active {
+    background: var(--butter-active);
+}
+
+.choice[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--yellow);
+    font-weight: 700;
+}
+
+.results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.results div {
+    padding: 8px 12px;
+    background: var(--paper);
+    border-radius: 12px;
+}
+
+.results dt {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.results dd {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.actions .btn {
+    flex: 1 1 auto;
+    min-height: 48px;
+}
+
+.actions .primary {
+    flex-basis: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .piece.must::before {
+        animation: none;
+    }
+}
+
+@media (min-width: 900px) {
+    :root {
+        --board: min(100vw - 420px, 100dvh - 180px, 680px);
+    }
+
+    .game {
+        grid-template-columns: auto 280px;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+        grid-template-areas: "top status" "board controls" "board ." "bottom .";
+        justify-content: center;
+        justify-items: stretch;
+        column-gap: 36px;
+        row-gap: 10px;
+        padding: 16px 24px;
+    }
+
+    .game > .status,
+    .game > .controls {
+        width: auto;
+    }
+
+    .status {
+        grid-area: status;
+        font-size: 24px;
+    }
+
+    #seat-top {
+        grid-area: top;
+    }
+
+    #seat-bottom {
+        grid-area: bottom;
+    }
+
+    .board {
+        grid-area: board;
+    }
+
+    .controls {
+        grid-area: controls;
+        align-self: start;
+        margin-top: 0;
+    }
+}

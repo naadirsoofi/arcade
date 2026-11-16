@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Last Letter | Arcade</title>
+    <meta name="description" content="Last Letter: guess the hidden word one letter at a time before all seven lanterns go dark. Nine categories, hints, and a winning streak to protect.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app" id="app" data-state="ready" data-lit="7">
+        <header class="bar">
+            <a class="back" href="../../">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+                Arcade
+            </a>
+            <h1 class="name">Last Letter</h1>
+        </header>
+
+        <main class="stage">
+            <div class="play" id="play">
+                <div class="hud">
+                    <span class="chip" id="category-name">Animals</span>
+                    <span class="streak">Streak <strong id="streak">0</strong></span>
+                </div>
+
+                <div class="lanterns" id="lanterns" role="img" aria-label="7 of 7 lanterns lit"></div>
+                <p class="chances" id="chances">7 chances left</p>
+
+                <div class="word" id="word"></div>
+                <p class="msg" id="msg" role="status"></p>
+
+                <div class="keys" id="keys" role="group" aria-label="Letter keys"></div>
+                <button class="tool" id="hint-btn" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5"/><path d="M10.5 21h3"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1.2 1.5 1.2 2.5h5.6c0-1 .5-1.8 1.2-2.5A6 6 0 0 0 12 3z"/></svg>
+                    Hint: show a letter, lose a lantern
+                </button>
+            </div>
+
+            <section class="overlay" id="start-screen" aria-labelledby="start-title">
+                <div class="card">
+                    <div class="mini-lanterns" id="start-lanterns" aria-hidden="true"></div>
+                    <h2 id="start-title">Keep the lanterns lit</h2>
+                    <p>Guess the hidden word one letter at a time. Every wrong letter puts out one of seven lanterns, so find the word before the last one goes dark.</p>
+                    <ul class="controls">
+                        <li><strong>Touch or mouse:</strong> tap the letter keys. Hint shows a letter but costs a lantern.</li>
+                        <li><strong>Keyboard:</strong> type letters, press / for a hint.</li>
+                    </ul>
+                    <label class="field">
+                        <span>Category</span>
+                        <select id="category-select"></select>
+                    </label>
+                    <p class="record" id="start-record"></p>
+                    <button class="primary" id="start-btn" type="button">Start</button>
+                </div>
+            </section>
+
+            <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+                <div class="card">
+                    <div class="mini-lanterns" id="end-lanterns" aria-hidden="true"></div>
+                    <h2 id="end-title">You got it!</h2>
+                    <p class="end-note" id="end-note">The word was</p>
+                    <p class="answer" id="end-word"></p>
+                    <dl class="results">
+                        <div><dt>Streak</dt><dd id="end-streak">0</dd></div>
+                        <div><dt>Best streak</dt><dd id="end-best">0</dd></div>
+                        <div><dt>Words won</dt><dd id="end-total">0 of 0</dd></div>
+                    </dl>
+                    <button class="primary" id="again-btn" type="button">Play again</button>
+                    <button class="ghost" id="change-btn" type="button">Change category</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="words.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

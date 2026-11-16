@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Four Fall | Arcade</title>
+    <meta name="description" content="Drop discs into seven columns and line up four in a row before your rival does. Play the computer on three levels or a friend on one screen.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Four Fall</h1>
+    </header>
+
+    <main class="game" id="game" data-state="ready">
+        <div class="score" aria-label="Score">
+            <div class="seat" id="seat-a"><i class="chip a" aria-hidden="true"></i><span class="name"></span><b class="points">0</b></div>
+            <div class="seat" id="seat-b"><b class="points">0</b><span class="name"></span><i class="chip b" aria-hidden="true"></i></div>
+        </div>
+
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+
+        <div class="stage" id="stage" tabindex="0" role="application" aria-label="Four Fall board, seven columns. Left and Right choose a column, Enter, Space or Down drops a disc, keys 1 to 7 drop in that column.">
+            <div class="lane"><i class="disc preview" id="preview" hidden></i></div>
+            <div class="well" id="well">
+                <i class="beam" id="beam" hidden></i>
+                <div class="discs" id="discs"></div>
+                <svg class="front" id="front" viewBox="0 0 700 600" aria-hidden="true"></svg>
+                <div class="halos" id="halos"></div>
+                <i class="landing" id="landing" hidden></i>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="undo" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+                Undo
+            </button>
+            <button class="btn" id="new" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                New game
+            </button>
+        </div>
+
+        <section class="overlay" id="start-screen" aria-labelledby="start-title">
+            <div class="card">
+                <h2 id="start-title">Four Fall</h2>
+                <p>Take turns dropping discs. The first to line up four in a row, across, up or diagonally, wins the round.</p>
+                <ul class="howto">
+                    <li><b>Touch</b> Slide a finger anywhere to aim, lift to drop. Tapping a column drops too.</li>
+                    <li><b>Keyboard</b> Left and Right aim, Enter, Space or Down drops. Keys 1 to 7 drop straight in.</li>
+                </ul>
+                <div class="option" role="group" aria-label="Opponent">
+                    <button class="choice" type="button" data-option="mode" data-value="computer">Computer</button>
+                    <button class="choice" type="button" data-option="mode" data-value="pair">Two players</button>
+                </div>
+                <div class="option" id="level-option" role="group" aria-label="Level">
+                    <button class="choice" type="button" data-option="level" data-value="easy">Easy</button>
+                    <button class="choice" type="button" data-option="level" data-value="medium">Medium</button>
+                    <button class="choice" type="button" data-option="level" data-value="hard">Hard</button>
+                </div>
+                <div class="option" id="first-option" role="group" aria-label="Who starts">
+                    <button class="choice" type="button" data-option="first" data-value="you">You start</button>
+                    <button class="choice" type="button" data-option="first" data-value="computer">Computer starts</button>
+                </div>
+                <div class="actions">
+                    <button class="btn primary" id="start" type="button">Start game</button>
+                    <button class="btn" id="resume" type="button" hidden>Back to game</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+            <div class="card" id="end-card">
+                <p class="eyebrow" id="end-eyebrow"></p>
+                <h2 id="end-title"></h2>
+                <p id="end-note"></p>
+                <dl class="results" id="results"></dl>
+                <div class="actions">
+                    <button class="btn primary" id="again" type="button">Play again</button>
+                    <button class="btn" id="review" type="button">See the board</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="engine.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

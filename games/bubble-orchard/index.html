@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bubble Orchard | Arcade</title>
+    <meta name="description" content="A bubble shooter in an orchard. Aim and launch fruit, pop clusters of three or more, drop whatever is left hanging, and clear the board before the canopy pushes it down to the launcher.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Bubble Orchard</h1>
+    </header>
+
+    <main class="game" id="game" data-state="ready">
+        <div class="hud">
+            <div class="stat"><span>Score</span><b id="score">0</b></div>
+            <div class="stat"><span>Best</span><b id="best">0</b></div>
+            <div class="stat"><span>Level</span><b id="level">1</b></div>
+            <div class="stat drop"><span>Drop in</span><b id="drop">0</b></div>
+        </div>
+
+        <p class="notice" id="notice" role="status"></p>
+
+        <div class="board" id="board">
+            <canvas id="field" role="img" aria-label="Orchard canopy full of fruit bubbles, with the launcher at the bottom. Aim with Left and Right, fire with Space, swap with Down."></canvas>
+        </div>
+
+        <section class="overlay" id="start-screen" aria-labelledby="start-title">
+            <div class="card">
+                <h2 id="start-title">Pick the orchard clean</h2>
+                <p>Launch fruit into the canopy. Three or more of a kind pop, and anything left hanging falls for bonus points. The canopy drops a row every few shots, so clear it before fruit reaches the launcher.</p>
+                <ul class="controls">
+                    <li><b>Keyboard and mouse</b> Left and Right aim, Space fires, Down swaps. Or move the mouse and click.</li>
+                    <li><b>Touch</b> Slide a finger anywhere to aim, lift to fire. Tap the next fruit to swap.</li>
+                </ul>
+                <p class="note" id="start-best"></p>
+                <button class="btn primary" id="start" type="button">Start picking</button>
+            </div>
+        </section>
+
+        <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+            <div class="card">
+                <h2 id="end-title">Overgrown</h2>
+                <p id="end-reason"></p>
+                <p class="note" id="end-note"></p>
+                <dl class="results">
+                    <div><dt>Score</dt><dd id="end-score">0</dd></div>
+                    <div><dt>Best score</dt><dd id="end-best">0</dd></div>
+                    <div><dt>Level reached</dt><dd id="end-level">1</dd></div>
+                    <div><dt>Best level</dt><dd id="end-furthest">1</dd></div>
+                </dl>
+                <button class="btn primary" id="again" type="button">Play again</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="game.js"></script>
+</body>
+</html>

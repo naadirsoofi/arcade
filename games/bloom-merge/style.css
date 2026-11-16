@@ -1,0 +1,594 @@
+:root {
+    --bg: #221a30;
+    --panel: #2f2544;
+    --plot: #3c3056;
+    --raised: #45386a;
+    --raised-hover: #554681;
+    --raised-active: #655597;
+    --cream: #f5efe0;
+    --cream-hover: #fffaf0;
+    --cream-active: #dfd5bd;
+    --leaf: #8fd67b;
+    --error: #ff7a70;
+    --text: #f5efe0;
+    --muted: #c8bedb;
+    --ink: #221a30;
+    --gap: 8px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 500 17px/1.45 "Quicksand", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+h1,
+h2,
+p,
+dl,
+dd,
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--leaf);
+    outline-offset: 3px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 16px;
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 4px 4px 0;
+    border-bottom: 2px solid transparent;
+    color: var(--cream);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back:hover {
+    border-bottom-color: var(--cream);
+    color: var(--cream-hover);
+}
+
+.back:active {
+    color: var(--cream-active);
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.bar h1 {
+    color: var(--leaf);
+    font-size: 21px;
+    font-weight: 700;
+}
+
+main {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px 16px;
+}
+
+.start,
+.play,
+.end {
+    display: none;
+}
+
+[data-state="ready"] .start {
+    display: block;
+}
+
+[data-state="playing"] .play,
+[data-state="goal"] .play,
+[data-state="over"] .play {
+    display: flex;
+}
+
+[data-state="goal"] .end,
+[data-state="over"] .end {
+    display: grid;
+}
+
+/* Cards */
+
+.card {
+    width: min(100%, 470px);
+    padding: 26px;
+    background: var(--panel);
+    border: 2px solid var(--raised);
+    border-radius: 20px;
+}
+
+.card h2 {
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+.card p {
+    margin-top: 8px;
+    color: var(--muted);
+}
+
+.demo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.demo .tile {
+    position: static;
+    width: 56px;
+    height: 56px;
+    font-size: 18px;
+    transform: none;
+}
+
+.controls {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+    list-style: none;
+    color: var(--muted);
+}
+
+.controls b {
+    color: var(--cream);
+    font-weight: 700;
+}
+
+.sizes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.size {
+    display: grid;
+    padding: 8px 6px;
+    background: var(--raised);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.size small {
+    color: var(--muted);
+    font-size: 16px;
+    font-weight: 500;
+}
+
+@media (hover: hover) {
+    .size:hover {
+        background: var(--raised-hover);
+    }
+}
+
+.size:active {
+    background: var(--raised-active);
+}
+
+.size[aria-pressed="true"] {
+    background: var(--bg);
+    border-color: var(--cream);
+}
+
+.card .best-line {
+    min-height: 1.45em;
+    margin-top: 12px;
+    text-align: center;
+}
+
+/* Buttons */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 8px 16px;
+    background: var(--raised);
+    border: 0;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn svg {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--leaf);
+}
+
+@media (hover: hover) {
+    .btn:hover {
+        background: var(--raised-hover);
+    }
+}
+
+.btn:active {
+    background: var(--raised-active);
+}
+
+.btn.primary {
+    width: 100%;
+    margin-top: 14px;
+    padding: 13px 20px;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 19px;
+}
+
+@media (hover: hover) {
+    .btn.primary:hover {
+        background: var(--cream-hover);
+    }
+}
+
+.btn.primary:active {
+    background: var(--cream-active);
+}
+
+/* Play screen: it fills the page so a slide can start anywhere */
+
+.play {
+    --board: min(100vw - 24px, 100dvh - 250px, 520px);
+    --tile: calc((var(--board) - (var(--n) + 1) * var(--gap)) / var(--n));
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.hud {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: var(--board);
+}
+
+.hud div {
+    padding: 6px 12px;
+    background: var(--panel);
+    border-radius: 14px;
+}
+
+.hud dt {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.25;
+}
+
+.hud dd {
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+}
+
+.hud small {
+    color: var(--muted);
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.board {
+    position: relative;
+    width: var(--board);
+    height: var(--board);
+    padding: var(--gap);
+    background: var(--panel);
+    border-radius: 18px;
+}
+
+.plots {
+    display: grid;
+    grid-template-columns: repeat(var(--n), 1fr);
+    gap: var(--gap);
+    width: 100%;
+    height: 100%;
+}
+
+.plots div {
+    background: var(--plot);
+    border-radius: 16%;
+}
+
+.tiles {
+    position: absolute;
+    inset: var(--gap);
+}
+
+.tile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--tile);
+    height: var(--tile);
+    font-size: calc(var(--tile) * 0.3);
+    transform: translate(calc(var(--x) * (100% + var(--gap))), calc(var(--y) * (100% + var(--gap))));
+    transition: transform 0.11s ease-out;
+}
+
+.face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: var(--shade);
+    border-radius: 16%;
+    box-shadow: inset 0 -0.22em 0 var(--edge);
+    color: var(--ink);
+}
+
+.face svg {
+    width: 50%;
+    height: 50%;
+    margin-top: -4%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.face b {
+    font-weight: 700;
+    line-height: 1;
+}
+
+.s1 { --shade: #dcc9a1; --edge: #b9a57c; }
+.s2 { --shade: #c5df8d; --edge: #9fbb66; }
+.s3 { --shade: #93d67f; --edge: #6db35a; }
+.s4 { --shade: #5fc78d; --edge: #3fa56d; }
+.s5 { --shade: #55c2bb; --edge: #36a099; }
+.s6 { --shade: #74b3ef; --edge: #4f8fcd; }
+.s7 { --shade: #a497f5; --edge: #7f72d3; }
+.s8 { --shade: #cf8fec; --edge: #ab6bc9; }
+.s9 { --shade: #f28dbe; --edge: #cf689b; }
+.s10 { --shade: #ff927a; --edge: #dc6d55; }
+.s11 { --shade: #ffb057; --edge: #dc8c33; }
+.s12 { --shade: #ffd65a; --edge: #dcb136; }
+.s13 { --shade: #f5efe0; --edge: #d2c9b2; }
+
+.stone .face {
+    background: #6f6781;
+    box-shadow: inset 0 -0.22em 0 #544d65;
+    color: #d9d2e6;
+}
+
+.stone .face svg {
+    width: 62%;
+    height: 62%;
+    margin: 0;
+}
+
+.pop .face {
+    animation: pop 0.2s ease-out;
+}
+
+.appear .face {
+    animation: appear 0.16s ease-out;
+}
+
+.crumble .face {
+    animation: crumble 0.26s ease-in forwards;
+}
+
+@keyframes pop {
+    40% {
+        transform: scale(1.16);
+    }
+}
+
+@keyframes appear {
+    from {
+        transform: scale(0.2);
+        opacity: 0;
+    }
+}
+
+@keyframes crumble {
+    to {
+        transform: scale(0.3) rotate(24deg);
+        opacity: 0;
+    }
+}
+
+.nudge-left { animation: nudge-x 0.16s ease-out; --push: -6px; }
+.nudge-right { animation: nudge-x 0.16s ease-out; --push: 6px; }
+.nudge-up { animation: nudge-y 0.16s ease-out; --push: -6px; }
+.nudge-down { animation: nudge-y 0.16s ease-out; --push: 6px; }
+
+@keyframes nudge-x {
+    40% {
+        transform: translateX(var(--push));
+    }
+}
+
+@keyframes nudge-y {
+    40% {
+        transform: translateY(var(--push));
+    }
+}
+
+.tools {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: var(--board);
+}
+
+/* End screens */
+
+.end {
+    position: absolute;
+    inset: 0;
+    place-items: center;
+    padding: 12px;
+    background: rgba(34, 26, 48, 0.8);
+    animation: fade-in 0.3s ease-out 0.4s backwards;
+}
+
+.end .card {
+    text-align: center;
+    border-color: var(--error);
+}
+
+[data-state="goal"] .end .card {
+    border-color: var(--leaf);
+}
+
+.card .badge {
+    display: inline-block;
+    margin: 0 0 10px;
+    padding: 3px 16px;
+    background: var(--leaf);
+    border-radius: 999px;
+    color: var(--ink);
+    font-weight: 700;
+}
+
+.card .badge[hidden] {
+    display: none;
+}
+
+.result {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.result div {
+    padding: 8px 4px;
+    background: var(--bg);
+    border-radius: 14px;
+}
+
+.result dt {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.result dd {
+    font-size: 25px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.end-more {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --gap: 6px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .card h2 {
+        font-size: 25px;
+    }
+
+    .play {
+        justify-content: flex-start;
+    }
+
+    .btn {
+        padding: 8px 10px;
+    }
+}
+
+/* Short screens: the start card drops its picture so it still fits without scrolling */
+
+@media (max-height: 700px) {
+    .demo {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tile {
+        transition: none;
+    }
+
+    .pop .face,
+    .appear .face,
+    .end {
+        animation: none;
+    }
+
+    .crumble {
+        display: none;
+    }
+}

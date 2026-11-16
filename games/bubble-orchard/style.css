@@ -1,0 +1,360 @@
+:root {
+    --paper: #f6f1e4;
+    --bar: #ffffff;
+    --panel: #ffffff;
+    --line: #d9d0ee;
+    --ink: #2a2140;
+    --muted: #5d5478;
+    --violet: #6a55d8;
+    --violet-hover: #5843c4;
+    --violet-active: #4734a8;
+    --lilac: #a393ff;
+    --wash: #ece7ff;
+    --leaf: #25683d;
+    --success: #1f7a43;
+    --error: #b93a32;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 520px;
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 17px/1.45 "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-weight: 500;
+    touch-action: manipulation;
+}
+
+a,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--leaf);
+    outline-offset: 3px;
+}
+
+.bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 52px;
+    padding: 0 16px;
+    background: var(--bar);
+    border-bottom: 2px solid var(--line);
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px 6px 10px;
+    border-radius: 999px;
+    background: var(--wash);
+    color: var(--violet);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.back:hover {
+    background: var(--line);
+    color: var(--violet-hover);
+}
+
+.back:active {
+    background: var(--lilac);
+    color: var(--ink);
+}
+
+.bar h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.game {
+    position: relative;
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 6px;
+    width: 100%;
+    min-height: 0;
+    padding: 8px 16px 12px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.game[data-state="playing"],
+.game[data-state="ending"] {
+    touch-action: none;
+}
+
+.hud {
+    display: flex;
+    gap: 8px;
+}
+
+.stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 6px;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    line-height: 1.15;
+}
+
+.stat span {
+    color: var(--muted);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.stat b {
+    font-size: 21px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat.drop {
+    background: var(--wash);
+    border-color: var(--lilac);
+}
+
+.stat.drop[data-tone="warn"] {
+    background: #ffe9e4;
+    border-color: var(--error);
+}
+
+.stat.drop[data-tone="warn"] b {
+    color: var(--error);
+}
+
+.notice {
+    min-height: 24px;
+    margin: 0;
+    color: var(--muted);
+    font-weight: 700;
+    line-height: 24px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notice[data-tone="good"] {
+    color: var(--success);
+}
+
+.notice[data-tone="warn"] {
+    color: var(--error);
+}
+
+.board {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    touch-action: none;
+}
+
+.board canvas {
+    flex: none;
+    display: block;
+    border: 3px solid var(--ink);
+    border-radius: 18px;
+    background: #fffdf7;
+    cursor: crosshair;
+}
+
+.btn {
+    min-height: 52px;
+    padding: 0 24px;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn:hover {
+    border-color: var(--violet);
+}
+
+.btn:active {
+    background: var(--wash);
+}
+
+.btn.primary {
+    width: 100%;
+    background: var(--violet);
+    border-color: var(--violet);
+    color: #ffffff;
+}
+
+.btn.primary:hover {
+    background: var(--violet-hover);
+    border-color: var(--violet-hover);
+}
+
+.btn.primary:active {
+    background: var(--violet-active);
+    border-color: var(--violet-active);
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 14px;
+    background: rgba(246, 241, 228, 0.93);
+    overflow-y: auto;
+}
+
+.overlay[hidden] {
+    display: none;
+}
+
+.card {
+    width: 100%;
+    max-width: 440px;
+    padding: 22px;
+    background: var(--panel);
+    border: 3px solid var(--ink);
+    border-radius: 26px;
+    box-shadow: 6px 6px 0 var(--lilac);
+}
+
+.card > * {
+    margin: 0 0 12px;
+}
+
+.card > :last-child {
+    margin-bottom: 0;
+}
+
+.card h2 {
+    font-size: 30px;
+    line-height: 1.1;
+    font-weight: 900;
+    color: var(--violet);
+}
+
+.controls {
+    display: grid;
+    gap: 8px;
+    padding: 12px 14px;
+    background: var(--wash);
+    border-radius: 16px;
+    list-style: none;
+}
+
+.controls b {
+    display: block;
+    color: var(--leaf);
+    font-weight: 800;
+}
+
+.note {
+    color: var(--success);
+    font-weight: 800;
+}
+
+.note:empty {
+    display: none;
+}
+
+#end-reason {
+    color: var(--error);
+    font-weight: 700;
+}
+
+.results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.results div {
+    padding: 10px 14px;
+    background: var(--wash);
+    border-radius: 16px;
+}
+
+.results dt {
+    color: var(--muted);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.results dd {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 880px) {
+    .game {
+        grid-template-columns: minmax(0, 1fr) 260px;
+        grid-template-rows: auto auto minmax(0, 1fr);
+        grid-template-areas: "board hud" "board notice" "board .";
+        column-gap: 28px;
+        row-gap: 16px;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 24px 32px;
+    }
+
+    .hud {
+        grid-area: hud;
+        flex-wrap: wrap;
+    }
+
+    .stat {
+        flex: 1 1 40%;
+        padding: 10px;
+    }
+
+    .stat b {
+        font-size: 28px;
+    }
+
+    .notice {
+        grid-area: notice;
+        min-height: 48px;
+        white-space: normal;
+    }
+
+    .board {
+        grid-area: board;
+        justify-content: flex-end;
+    }
+}

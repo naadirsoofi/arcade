@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bloom Merge | Arcade</title>
+    <meta name="description" content="Bloom Merge is a free browser puzzle. Slide the whole garden and merge matching plants into bigger blooms, clear stones, and grow to the goal stage on a 4x4 or 5x5 garden. Works on phone and desktop.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Bloom Merge</h1>
+    </header>
+
+    <main id="game" data-state="ready">
+        <section class="card start" aria-labelledby="start-title">
+            <div class="demo" id="demo" aria-hidden="true"></div>
+            <h2 id="start-title">Grow the garden</h2>
+            <p>Slide and every plant moves as far as it can. Two matching plants that meet grow one stage. Stones never merge: grow a plant beside one to clear it.</p>
+            <ul class="controls">
+                <li><b>Touch:</b> slide a finger anywhere, and keep sliding without lifting.</li>
+                <li><b>Keyboard:</b> arrow keys or WASD to slide, Z to undo one move.</li>
+            </ul>
+            <div class="sizes" role="group" aria-label="Garden size">
+                <button type="button" class="size" data-size="4" aria-pressed="false">4 x 4<small>goal: stage 10</small></button>
+                <button type="button" class="size" data-size="5" aria-pressed="false">5 x 5<small>goal: stage 12</small></button>
+            </div>
+            <p class="best-line" id="start-best"></p>
+            <button type="button" class="btn primary" id="start-btn">Start</button>
+        </section>
+
+        <section class="play" aria-label="Garden">
+            <dl class="hud">
+                <div><dt>Score</dt><dd id="score">0</dd></div>
+                <div><dt>Best</dt><dd id="best">0</dd></div>
+                <div><dt>Stage</dt><dd><span id="top">1</span><small id="goal"></small></dd></div>
+            </dl>
+            <div class="board" id="board">
+                <div class="plots" id="plots"></div>
+                <div class="tiles" id="tiles"></div>
+            </div>
+            <div class="tools">
+                <button type="button" class="btn" id="undo-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5L4 9l4 4"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+                    Undo
+                </button>
+                <button type="button" class="btn" id="new-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4.5v4.6h4.6"/></svg>
+                    New
+                </button>
+                <button type="button" class="btn" id="menu-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                    Menu
+                </button>
+            </div>
+            <p class="sr-only" id="status" role="status"></p>
+        </section>
+
+        <section class="end" role="dialog" aria-modal="true" aria-labelledby="end-title">
+            <div class="card">
+                <p class="badge" id="end-badge" hidden>New best score</p>
+                <h2 id="end-title">The garden is full</h2>
+                <p id="end-note"></p>
+                <dl class="result">
+                    <div><dt>Score</dt><dd id="end-score">0</dd></div>
+                    <div><dt>Best</dt><dd id="end-best">0</dd></div>
+                    <div><dt>Stage</dt><dd id="end-top">1</dd></div>
+                </dl>
+                <button type="button" class="btn primary" id="again-btn">Play again</button>
+                <div class="end-more">
+                    <button type="button" class="btn" id="end-other-btn">Undo last move</button>
+                    <button type="button" class="btn" id="end-menu-btn">Menu</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="engine.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

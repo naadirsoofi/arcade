@@ -1,0 +1,623 @@
+:root {
+    --night: #2a2147;
+    --bar: #171129;
+    --panel: #3a2f5e;
+    --panel-line: #57498a;
+    --cream: #f5efe0;
+    --cream-dim: #c9c0dc;
+    --ink: #221a38;
+    --amber: #ffb547;
+    --amber-light: #ffd08a;
+    --amber-deep: #c97f12;
+    --good: #6fd6b0;
+    --bad: #ff8a7a;
+    --tile: 30px;
+    --tile-gap: 4px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--night);
+    color: var(--cream);
+    font: 400 17px/1.45 "Lexend", "Segoe UI", system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button,
+select {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible {
+    outline: 3px solid var(--amber);
+    outline-offset: 3px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* The room gets darker with every lantern that goes out. */
+.app {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+    background: var(--night);
+    transition: background-color 0.5s ease;
+}
+
+.app[data-lit="6"] { --night: #262042; }
+.app[data-lit="5"] { --night: #231d3c; }
+.app[data-lit="4"] { --night: #1f1936; }
+.app[data-lit="3"] { --night: #1b162f; }
+.app[data-lit="2"] { --night: #171228; }
+.app[data-lit="1"] { --night: #120e20; }
+.app[data-lit="0"] { --night: #0c0916; }
+
+/* Top bar */
+
+.bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    min-height: 50px;
+    padding: 5px 12px;
+    background: var(--bar);
+}
+
+.back {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 6px 6px;
+    border-radius: 8px;
+    color: var(--cream);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.back:hover {
+    background: var(--panel);
+}
+
+.back:active {
+    background: var(--cream);
+    color: var(--ink);
+}
+
+.name {
+    margin: 0;
+    color: var(--cream);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+/* Play area */
+
+.stage {
+    position: relative;
+    min-height: 0;
+}
+
+.play {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 10px 12px 12px;
+    touch-action: none;
+}
+
+.hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+}
+
+.chip {
+    padding: 3px 14px;
+    background: var(--cream);
+    border-radius: 999px;
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.streak strong {
+    color: var(--amber);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.lanterns {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-top: 2px;
+}
+
+/* The cord the lanterns hang from. */
+.lanterns::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -14px;
+    right: -14px;
+    height: 3px;
+    background: var(--panel-line);
+    border-radius: 2px;
+}
+
+.lantern {
+    width: 36px;
+    height: 58px;
+    fill: none;
+    stroke: var(--cream);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.lantern .glass {
+    fill: var(--amber);
+    transition: fill 0.4s ease;
+}
+
+.lantern .flame {
+    fill: var(--cream);
+    stroke: none;
+    transition: opacity 0.4s ease;
+}
+
+.lantern.out {
+    stroke: var(--panel-line);
+}
+
+.lantern.out .glass {
+    fill: none;
+}
+
+.lantern.out .flame {
+    opacity: 0;
+}
+
+.lantern.puff {
+    animation: puff 0.45s ease;
+}
+
+@keyframes puff {
+    30% { transform: translateY(3px) rotate(-7deg); }
+    65% { transform: rotate(5deg); }
+}
+
+.chances {
+    margin: 0;
+    color: var(--cream-dim);
+}
+
+.word {
+    flex: 1 1 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px 16px;
+    width: 100%;
+    min-height: 0;
+}
+
+.token {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: var(--tile-gap);
+    white-space: nowrap;
+}
+
+.tile,
+.punct {
+    display: grid;
+    place-items: center;
+    height: calc(var(--tile) + 10px);
+    font-size: calc(var(--tile) * 0.8);
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.tile {
+    width: var(--tile);
+    border-bottom: 4px solid var(--cream);
+}
+
+.punct {
+    min-width: calc(var(--tile) * 0.4);
+}
+
+.tile.shown {
+    border-bottom-color: var(--good);
+}
+
+.tile.fresh {
+    animation: rise 0.3s ease;
+}
+
+.tile.missed {
+    border-bottom-color: var(--bad);
+    color: var(--bad);
+}
+
+@keyframes rise {
+    0% { transform: translateY(8px); opacity: 0; }
+}
+
+.msg {
+    min-height: 25px;
+    margin: 0;
+    font-weight: 600;
+    text-align: center;
+}
+
+.msg.good {
+    color: var(--good);
+}
+
+.msg.bad {
+    color: var(--bad);
+}
+
+.keys {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    max-width: 560px;
+    touch-action: manipulation;
+}
+
+.key-row {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.key {
+    flex: 0 1 50px;
+    min-width: 0;
+    height: 48px;
+    padding: 0;
+    background: var(--cream);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 0 3px 0 var(--cream-dim);
+    color: var(--ink);
+    font-size: 20px;
+    font-weight: 800;
+    touch-action: manipulation;
+}
+
+@media (hover: hover) {
+    .key:hover:not(:disabled) {
+        background: var(--amber-light);
+    }
+}
+
+.key:active:not(:disabled) {
+    background: var(--amber);
+    transform: translateY(3px);
+    box-shadow: none;
+}
+
+.key:disabled {
+    cursor: default;
+    box-shadow: none;
+}
+
+.key.right {
+    background: var(--good);
+}
+
+.key.wrong {
+    background: var(--panel);
+    box-shadow: inset 0 0 0 2px var(--bad);
+    color: var(--bad);
+    text-decoration: line-through;
+}
+
+.tool {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 560px;
+    min-height: 46px;
+    padding: 6px 10px;
+    background: none;
+    border: 2px solid var(--amber);
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.tool svg {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--amber);
+}
+
+.tool:hover:not(:disabled) {
+    background: var(--panel);
+}
+
+.tool:active:not(:disabled) {
+    background: var(--amber);
+    color: var(--ink);
+}
+
+.tool:active:not(:disabled) svg {
+    color: var(--ink);
+}
+
+.tool:disabled {
+    border-color: var(--panel-line);
+    color: var(--cream-dim);
+    cursor: default;
+}
+
+.tool:disabled svg {
+    color: var(--cream-dim);
+}
+
+/* Start and end screens */
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    padding: 14px;
+    overflow-y: auto;
+    background: var(--night);
+}
+
+.card {
+    width: 100%;
+    max-width: 470px;
+    margin: auto;
+    padding: 20px 20px 22px;
+    background: var(--panel);
+    border: 3px solid var(--cream);
+    border-radius: 18px;
+    text-align: center;
+}
+
+.mini-lanterns {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.mini-lanterns .lantern {
+    width: 24px;
+    height: 39px;
+}
+
+.card h2 {
+    margin: 0 0 8px;
+    color: var(--amber);
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.card p {
+    margin: 0 0 12px;
+}
+
+.controls {
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+}
+
+.controls li {
+    padding: 7px 0;
+    border-top: 2px solid var(--panel-line);
+}
+
+.controls strong {
+    color: var(--amber);
+    font-weight: 600;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.field select {
+    flex: 1;
+    min-width: 0;
+    min-height: 46px;
+    padding: 6px 10px;
+    background: var(--cream);
+    border: 2px solid var(--cream);
+    border-radius: 10px;
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.record {
+    color: var(--cream-dim);
+}
+
+.primary {
+    width: 100%;
+    padding: 12px 24px;
+    background: var(--amber);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 5px 0 var(--amber-deep);
+    color: var(--ink);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.primary:hover {
+    background: var(--amber-light);
+}
+
+.primary:active {
+    transform: translateY(5px);
+    box-shadow: none;
+}
+
+.ghost {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 14px;
+    background: none;
+    border: 2px solid var(--cream);
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.ghost:hover {
+    background: var(--panel-line);
+}
+
+.ghost:active {
+    background: var(--cream);
+    color: var(--ink);
+}
+
+.end-note {
+    color: var(--cream-dim);
+}
+
+.card .end-note {
+    margin-bottom: 2px;
+}
+
+.answer {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.app.lost .answer {
+    color: var(--bad);
+}
+
+.app.won .answer {
+    color: var(--good);
+}
+
+.results {
+    margin: 0 0 18px;
+    text-align: left;
+}
+
+.results div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0;
+    border-top: 2px solid var(--panel-line);
+}
+
+.results dt {
+    color: var(--cream-dim);
+}
+
+.results dd {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+@media (min-width: 700px) and (min-height: 700px) {
+    :root {
+        --tile: 46px;
+        --tile-gap: 6px;
+    }
+
+    .play {
+        gap: 12px;
+        padding: 20px;
+    }
+
+    .lanterns {
+        gap: 16px;
+    }
+
+    .lantern {
+        width: 50px;
+        height: 80px;
+    }
+
+    .mini-lanterns .lantern {
+        width: 24px;
+        height: 39px;
+    }
+
+    .key {
+        height: 54px;
+        font-size: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app,
+    .lantern .glass,
+    .lantern .flame {
+        transition: none;
+    }
+
+    .lantern.puff,
+    .tile.fresh {
+        animation: none;
+    }
+}

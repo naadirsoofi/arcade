@@ -1,0 +1,583 @@
+:root {
+    --mint: #e4f7f4;
+    --card: #f8fffd;
+    --ink: #0c2e33;
+    --muted: #3d6165;
+    --line: #a5d6d0;
+    --teal: #3fd0c9;
+    --teal-hover: #6adcd6;
+    --teal-active: #27b6af;
+    --mint-hover: #d2f0ec;
+    --mint-active: #bce6e1;
+    --hole: #0c2e33;
+    --hole-lit: #1f555c;
+    --gold: #ffc02e;
+    --gold-mark: #8f5a00;
+    --rose: #f2557d;
+    --rose-mark: #7d1233;
+    --success: #0a7350;
+    --error: #b0233b;
+    /* One board cell: as wide as the phone allows, or as tall as what is left under the other rows. */
+    --cell: min((100vw - 24px) / 7, (100dvh - 226px) / 7);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 520px;
+    margin: 0;
+    background: var(--mint);
+    color: var(--ink);
+    font: 17px/1.4 "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    touch-action: manipulation;
+}
+
+a,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+.stage:focus-visible .well {
+    outline: 3px solid var(--rose-mark);
+    outline-offset: 3px;
+}
+
+.stage:focus-visible {
+    outline: none;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 48px;
+    padding: 0 12px;
+    background: var(--ink);
+    color: var(--mint);
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px 6px 8px;
+    border-radius: 999px;
+    color: var(--teal);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.back:hover {
+    background: #17434a;
+}
+
+.back:active {
+    background: #1f555c;
+}
+
+.back:focus-visible {
+    outline-color: var(--teal);
+}
+
+.bar h1 {
+    margin: 0;
+    padding-left: 14px;
+    border-left: 2px solid #1f555c;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.game {
+    position: relative;
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    justify-items: center;
+    gap: 8px;
+    min-height: 0;
+    padding: 8px 12px 10px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* While a round is on, a finger anywhere on the play screen aims the disc instead of scrolling the page. */
+.game[data-state="playing"] {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.game > .score,
+.game > .status,
+.game > .controls {
+    width: calc(var(--cell) * 7);
+}
+
+.score {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 36px;
+}
+
+.seat {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    padding: 2px 10px 2px 4px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+#seat-b {
+    padding: 2px 4px 2px 10px;
+}
+
+.seat.active {
+    background: var(--card);
+    border-color: var(--ink);
+    color: var(--ink);
+}
+
+.seat .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.seat.active .name {
+    font-weight: 700;
+}
+
+.points {
+    color: var(--ink);
+    font-size: 22px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.chip {
+    flex: none;
+    width: 26px;
+    height: 26px;
+}
+
+.status {
+    margin: 0;
+    min-height: 26px;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 26px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.game[data-state="over"] .status {
+    color: var(--success);
+}
+
+/* Discs: Gold carries a ring, Rose a diamond. */
+.disc svg,
+.chip svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.a .body {
+    fill: var(--gold);
+}
+
+.a .mark {
+    fill: none;
+    stroke: var(--gold-mark);
+    stroke-width: 7;
+}
+
+.b .body {
+    fill: var(--rose);
+}
+
+.b .mark {
+    fill: var(--rose-mark);
+}
+
+.stage {
+    width: calc(var(--cell) * 7);
+    border-radius: 12px;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+}
+
+.lane {
+    position: relative;
+    height: var(--cell);
+}
+
+.disc {
+    position: absolute;
+    width: calc(100% / 7);
+    height: calc(100% / 6);
+}
+
+.disc.preview {
+    top: 0;
+    left: 0;
+    width: var(--cell);
+    height: var(--cell);
+}
+
+.disc.preview.blocked {
+    opacity: 0.35;
+}
+
+.well {
+    position: relative;
+    height: calc(var(--cell) * 6);
+    background: var(--hole);
+    border-radius: calc(var(--cell) * 0.28);
+}
+
+.beam {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: calc(100% / 7);
+    background: var(--hole-lit);
+}
+
+.discs,
+.halos {
+    position: absolute;
+    inset: 0;
+}
+
+.discs.decided .disc:not(.win) {
+    opacity: 0.45;
+}
+
+.front {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: var(--teal);
+}
+
+.landing,
+.halo {
+    position: absolute;
+    width: calc(100% / 7);
+    height: calc(100% / 6);
+}
+
+.landing::after,
+.halo::after {
+    content: "";
+    position: absolute;
+    inset: 13%;
+    border-radius: 50%;
+}
+
+.landing::after {
+    border: 3px dashed var(--mint);
+}
+
+.halo::after {
+    border: 5px solid var(--card);
+    animation: glow 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { transform: scale(1); }
+    to { transform: scale(0.82); }
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 14px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.btn svg {
+    flex: none;
+    width: 20px;
+    height: 20px;
+}
+
+.btn:hover {
+    background: var(--mint-hover);
+}
+
+.btn:active {
+    background: var(--mint-active);
+}
+
+.btn:disabled {
+    border-color: var(--line);
+    color: #6f9296;
+    background: var(--mint);
+    cursor: default;
+}
+
+.btn.primary {
+    background: var(--teal);
+}
+
+.btn.primary:hover {
+    background: var(--teal-hover);
+}
+
+.btn.primary:active {
+    background: var(--teal-active);
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: grid;
+    place-items: center;
+    padding: 14px;
+    background: rgba(228, 247, 244, 0.94);
+    overflow-y: auto;
+}
+
+#end-screen {
+    background: rgba(228, 247, 244, 0.78);
+}
+
+.card {
+    width: 100%;
+    max-width: 430px;
+    padding: 20px;
+    background: var(--card);
+    border: 3px solid var(--ink);
+    border-radius: 26px;
+}
+
+.card > * {
+    margin: 0 0 12px;
+}
+
+.card > :last-child {
+    margin-bottom: 0;
+}
+
+.card h2 {
+    font-size: 32px;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.eyebrow {
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.eyebrow + h2 {
+    margin-top: -8px;
+}
+
+.card[data-result="win"] h2 {
+    color: var(--success);
+}
+
+.card[data-result="loss"] h2 {
+    color: var(--error);
+}
+
+.howto {
+    display: grid;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--mint);
+    border-radius: 16px;
+    list-style: none;
+}
+
+.howto b {
+    display: block;
+    font-weight: 700;
+}
+
+.option {
+    display: flex;
+    gap: 6px;
+}
+
+.choice {
+    flex: 1;
+    min-height: 44px;
+    padding: 0 8px;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.choice:hover {
+    background: var(--mint-hover);
+}
+
+.choice:active {
+    background: var(--mint-active);
+}
+
+.choice[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--teal);
+    font-weight: 700;
+}
+
+.results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.results div {
+    padding: 8px 14px;
+    background: var(--mint);
+    border-radius: 16px;
+}
+
+.results dt {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.results dd {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.actions .btn {
+    flex: 1 1 auto;
+    min-height: 48px;
+}
+
+.actions .primary {
+    flex-basis: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .halo::after {
+        animation: none;
+    }
+}
+
+@media (min-width: 900px) {
+    :root {
+        --cell: min((100vw - 440px) / 7, (100dvh - 100px) / 7, 96px);
+    }
+
+    .game {
+        grid-template-columns: auto 300px;
+        grid-template-rows: auto auto auto minmax(0, 1fr);
+        grid-template-areas: "stage score" "stage status" "stage controls" "stage .";
+        justify-content: center;
+        justify-items: stretch;
+        align-content: center;
+        column-gap: 40px;
+        row-gap: 16px;
+        padding: 16px 24px;
+    }
+
+    .game > .score,
+    .game > .status,
+    .game > .controls {
+        width: auto;
+    }
+
+    .stage {
+        grid-area: stage;
+    }
+
+    .score {
+        grid-area: score;
+        flex-direction: column;
+        margin-top: var(--cell);
+    }
+
+    .seat,
+    #seat-b {
+        padding: 6px 14px 6px 8px;
+    }
+
+    #seat-b .chip {
+        order: -2;
+    }
+
+    #seat-b .name {
+        order: -1;
+    }
+
+    .seat .points {
+        margin-left: auto;
+    }
+
+    .status {
+        grid-area: status;
+        font-size: 24px;
+        text-align: left;
+    }
+
+    .controls {
+        grid-area: controls;
+    }
+}

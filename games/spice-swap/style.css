@@ -1,0 +1,530 @@
+:root {
+    --cocoa: #24130d;
+    --bar: #1b0d08;
+    --panel: #3a2118;
+    --line: #6f4433;
+    --ink: #fff3dc;
+    --muted: #e3c6a2;
+    --dark: #24130d;
+    --yellow: #ffd24a;
+    --yellow-hover: #ffe07a;
+    --yellow-active: #f0bd24;
+    --dim: #b58166;
+    --chili: #ff6b4a;
+    --success: #9be08a;
+    --error: #ffa08c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 560px;
+    margin: 0;
+    background: var(--cocoa);
+    color: var(--ink);
+    font: 17px/1.4 "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+    touch-action: manipulation;
+}
+
+a,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+}
+
+.bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 52px;
+    padding: 0 16px;
+    background: var(--bar);
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px 6px 8px;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    color: var(--yellow);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.back svg {
+    width: 20px;
+    height: 20px;
+}
+
+.back:hover {
+    border-color: var(--yellow);
+    color: var(--yellow-hover);
+}
+
+.back:active {
+    background: var(--panel);
+}
+
+.bar h1 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.bar h1::after {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-left: 10px;
+    background: var(--chili);
+    transform: rotate(45deg);
+}
+
+.game {
+    position: relative;
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 8px;
+    width: 100%;
+    min-height: 0;
+    padding: 10px 16px 12px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.game[data-state="playing"],
+.game[data-state="ending"] {
+    touch-action: none;
+}
+
+.hud {
+    display: flex;
+    gap: 18px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.stat.grow {
+    margin-left: auto;
+    align-items: flex-end;
+}
+
+.stat span {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.stat b {
+    font-size: 23px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat b span {
+    color: var(--ink);
+    font-size: inherit;
+}
+
+.stat small {
+    color: var(--muted);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.stat small span {
+    color: var(--muted);
+    font-size: inherit;
+}
+
+.progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.track {
+    position: relative;
+    flex: 1;
+    height: 14px;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.fill {
+    width: 0;
+    height: 100%;
+    background: var(--yellow);
+    transition: width 200ms ease-out;
+}
+
+/* Marks for the one and two star scores. Three stars is the full bar. */
+.track::before,
+.track::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--ink);
+}
+
+.track::before {
+    left: 58.8%;
+}
+
+.track::after {
+    left: 79.4%;
+}
+
+.stars {
+    display: inline-flex;
+    gap: 2px;
+}
+
+.star {
+    width: 22px;
+    height: 22px;
+    color: var(--dim);
+}
+
+.star.on {
+    color: var(--yellow);
+    fill: var(--yellow);
+}
+
+.stars.big {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.stars.big .star {
+    width: 46px;
+    height: 46px;
+}
+
+.board {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    touch-action: none;
+}
+
+.board canvas {
+    flex: none;
+    display: block;
+    border-radius: 14px;
+    background: var(--bar);
+    touch-action: none;
+    cursor: grab;
+}
+
+.foot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.notice {
+    grid-column: 1 / -1;
+    min-height: 24px;
+    margin: 0;
+    color: var(--muted);
+    font-weight: 600;
+    line-height: 24px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notice[data-tone="good"] {
+    color: var(--success);
+}
+
+.notice[data-tone="warn"] {
+    color: var(--error);
+}
+
+.btn {
+    min-height: 50px;
+    padding: 0 22px;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn:hover {
+    border-color: var(--yellow);
+}
+
+.btn:active {
+    background: var(--line);
+}
+
+.btn.small {
+    min-height: 46px;
+    font-size: 16px;
+}
+
+.btn.primary {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--dark);
+}
+
+.btn.primary:hover {
+    background: var(--yellow-hover);
+    border-color: var(--yellow-hover);
+}
+
+.btn.primary:active {
+    background: var(--yellow-active);
+    border-color: var(--yellow-active);
+}
+
+.card .btn {
+    width: 100%;
+}
+
+.card .btn[hidden] {
+    display: none;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 12px 16px;
+    background: rgba(36, 19, 13, 0.93);
+    overflow-y: auto;
+}
+
+.overlay[hidden] {
+    display: none;
+}
+
+.card {
+    width: 100%;
+    max-width: 440px;
+    padding: 20px;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-bottom: 6px solid var(--yellow);
+    border-radius: 18px;
+}
+
+.card > * {
+    margin: 0 0 12px;
+}
+
+.card > :last-child {
+    margin-bottom: 0;
+}
+
+.card h2 {
+    font-size: 29px;
+    line-height: 1.1;
+    font-weight: 800;
+    color: var(--yellow);
+}
+
+.controls {
+    display: grid;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--cocoa);
+    border-radius: 12px;
+    list-style: none;
+}
+
+.controls b {
+    display: block;
+    color: var(--chili);
+    font-weight: 800;
+}
+
+.chooser {
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    gap: 10px;
+}
+
+.step {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    background: var(--cocoa);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+.step svg {
+    width: 24px;
+    height: 24px;
+}
+
+.step:hover {
+    border-color: var(--yellow);
+}
+
+.step:active {
+    background: var(--line);
+}
+
+.step:disabled {
+    color: var(--dim);
+    border-color: var(--panel);
+    cursor: default;
+}
+
+.choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.25;
+}
+
+.choice b {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.choice span {
+    color: var(--muted);
+    text-align: center;
+}
+
+.note {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.note:empty {
+    display: none;
+}
+
+#end-reason {
+    color: var(--error);
+    font-weight: 600;
+}
+
+#end-reason.won {
+    color: var(--success);
+}
+
+.results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.results div {
+    padding: 8px 14px;
+    background: var(--cocoa);
+    border-radius: 12px;
+}
+
+.results dt {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.results dd {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 880px) {
+    .game {
+        grid-template-columns: minmax(0, 1fr) 300px;
+        grid-template-rows: auto auto auto minmax(0, 1fr);
+        grid-template-areas: "board hud" "board progress" "board foot" "board .";
+        column-gap: 32px;
+        row-gap: 18px;
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 28px 32px;
+    }
+
+    .hud {
+        grid-area: hud;
+        flex-wrap: wrap;
+        row-gap: 14px;
+    }
+
+    .stat b {
+        font-size: 30px;
+    }
+
+    .stat.grow {
+        flex: 1 1 100%;
+        margin-left: 0;
+        align-items: flex-start;
+    }
+
+    .progress {
+        grid-area: progress;
+    }
+
+    .board {
+        grid-area: board;
+        justify-content: flex-end;
+        align-items: flex-start;
+    }
+
+    .foot {
+        grid-area: foot;
+    }
+
+    .notice {
+        min-height: 48px;
+        text-align: left;
+        white-space: normal;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fill {
+        transition: none;
+    }
+}

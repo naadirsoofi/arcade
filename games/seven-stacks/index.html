@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seven Stacks | Arcade</title>
+    <meta name="description" content="Seven Stacks is free classic solitaire in your browser: seven piles, a stock and four foundations to build from ace to king. Draw one or three, unlimited undo, hints, and it works on phone and desktop.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <svg class="defs" aria-hidden="true">
+        <symbol id="suit-0" viewBox="0 0 24 24">
+            <path d="M12 2C9 6.5 3 9.5 3 14.5a4.6 4.6 0 0 0 7.6 3.4c-.3 1.6-1 2.9-2.1 4.1h7c-1.1-1.2-1.8-2.5-2.1-4.1A4.6 4.6 0 0 0 21 14.5C21 9.5 15 6.5 12 2z"/>
+        </symbol>
+        <symbol id="suit-1" viewBox="0 0 24 24">
+            <path d="M12 21.5C6 16.5 2.5 13 2.5 8.5a5 5 0 0 1 9.5-2.2 5 5 0 0 1 9.5 2.2c0 4.5-3.5 8-9.5 13z"/>
+        </symbol>
+        <symbol id="suit-2" viewBox="0 0 24 24">
+            <path d="M12 2a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z"/>
+            <path d="M7 9.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z"/>
+            <path d="M17 9.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z"/>
+            <path d="M8.5 9h7l-1.5 6h-4z"/>
+            <path d="M12 13c0 3.6-1 6.7-3 9h6c-2-2.3-3-5.4-3-9z"/>
+        </symbol>
+        <symbol id="suit-3" viewBox="0 0 24 24">
+            <path d="M12 1.5l8.5 10.5L12 22.5 3.5 12z"/>
+        </symbol>
+    </svg>
+
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Seven Stacks</h1>
+    </header>
+
+    <main id="game" data-state="ready">
+        <section class="panel start" aria-labelledby="start-title">
+            <h2 id="start-title">Build four suits</h2>
+            <p>Move every card to the four foundations, each suit from ace up to king. On the seven piles, stack cards downward in alternating colors. Only a king can start an empty pile.</p>
+            <ul class="controls">
+                <li><b>Touch or mouse:</b> drag a card or a run, or tap a card to send it to its best spot. Tap the stock to draw.</li>
+                <li><b>Keyboard:</b> arrows move between piles, Enter or Space picks up and places, Z undoes, H hints.</li>
+            </ul>
+            <div class="seg" role="group" aria-label="Cards drawn from the stock">
+                <button type="button" data-draw="1" aria-pressed="false">Draw one</button>
+                <button type="button" data-draw="3" aria-pressed="false">Draw three</button>
+            </div>
+            <p class="stats-line" id="start-stats"></p>
+            <button type="button" class="btn primary" id="deal-btn">Deal</button>
+            <button type="button" class="btn wide" id="resume-btn" hidden>Back to game</button>
+        </section>
+
+        <section class="play" aria-label="Card table">
+            <dl class="hud">
+                <div><dt>Time</dt><dd id="time">0:00</dd></div>
+                <div><dt>Moves</dt><dd id="moves">0</dd></div>
+                <div><dt>Draw</dt><dd id="draw-mode">1</dd></div>
+            </dl>
+            <div class="table" id="table" tabindex="0" aria-label="Card table. Arrow keys move between piles, Enter or Space picks up and places.">
+                <div class="row top">
+                    <div class="slot stock" data-place="s"></div>
+                    <div class="slot waste" data-place="w"></div>
+                    <div class="spacer"></div>
+                    <div class="slot foundation" data-place="f0"></div>
+                    <div class="slot foundation" data-place="f1"></div>
+                    <div class="slot foundation" data-place="f2"></div>
+                    <div class="slot foundation" data-place="f3"></div>
+                </div>
+                <div class="row piles" id="piles">
+                    <div class="slot pile" data-place="t0"></div>
+                    <div class="slot pile" data-place="t1"></div>
+                    <div class="slot pile" data-place="t2"></div>
+                    <div class="slot pile" data-place="t3"></div>
+                    <div class="slot pile" data-place="t4"></div>
+                    <div class="slot pile" data-place="t5"></div>
+                    <div class="slot pile" data-place="t6"></div>
+                </div>
+            </div>
+            <button type="button" class="btn primary" id="finish-btn" hidden>Finish for me</button>
+            <div class="tools">
+                <button type="button" class="btn" id="undo-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5L4 9l4 4"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+                    Undo
+                </button>
+                <button type="button" class="btn" id="hint-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5"/><path d="M10.5 21h3"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1.2 1.5 1.2 2.5h5.6c0-1 .5-1.8 1.2-2.5A6 6 0 0 0 12 3z"/></svg>
+                    Hint
+                </button>
+                <button type="button" class="btn" id="new-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3.5" width="11" height="15" rx="2"/><path d="M8.5 21h9.5a2 2 0 0 0 2-2V8"/></svg>
+                    New
+                </button>
+            </div>
+            <p class="sr-only" id="status" role="status"></p>
+        </section>
+
+        <section class="end" role="dialog" aria-modal="true" aria-labelledby="end-title">
+            <div class="panel">
+                <p class="badge" id="end-badge" hidden>New best time</p>
+                <h2 id="end-title">All four suits built</h2>
+                <p id="end-note"></p>
+                <dl class="result">
+                    <div><dt>Time</dt><dd id="end-time">0:00</dd></div>
+                    <div><dt>Moves</dt><dd id="end-moves">0</dd></div>
+                    <div><dt>Best</dt><dd id="end-best">0:00</dd></div>
+                </dl>
+                <button type="button" class="btn primary" id="again-btn">Play again</button>
+                <button type="button" class="btn wide" id="end-menu-btn">Change draw</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="engine.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

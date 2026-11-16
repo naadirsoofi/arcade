@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spice Swap | Arcade</title>
+    <meta name="description" content="A match-three on a spice rack. Swap neighbouring spices to line up three or more, chain the cascades, make grinders and jars, and beat each level's target before the moves run out.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a class="back" href="../../">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+            Arcade
+        </a>
+        <h1>Spice Swap</h1>
+    </header>
+
+    <main class="game" id="game" data-state="ready">
+        <div class="hud">
+            <div class="stat"><span>Level</span><b id="level">1</b></div>
+            <div class="stat"><span>Moves</span><b id="moves">0</b></div>
+            <div class="stat grow"><span>Score</span><b><span id="score">0</span><small> of <span id="target">0</span></small></b></div>
+        </div>
+
+        <div class="progress">
+            <div class="track"><div class="fill" id="meter"></div></div>
+            <div class="stars" id="hud-stars" role="img" aria-label="Stars earned so far this level">
+                <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+                <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+                <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+            </div>
+        </div>
+
+        <div class="board" id="board">
+            <canvas id="field" role="img" aria-label="Spice rack, seven columns by eight rows. Move with the arrow keys, pick with Enter or Space, then press an arrow to swap."></canvas>
+        </div>
+
+        <div class="foot">
+            <p class="notice" id="notice" role="status"></p>
+            <button class="btn small" id="hint" type="button">Hint</button>
+            <button class="btn small" id="levels" type="button">Levels</button>
+        </div>
+
+        <section class="overlay" id="start-screen" aria-labelledby="start-title">
+            <div class="card">
+                <h2 id="start-title">Stock the spice rack</h2>
+                <p>Swap two neighbours to line up three or more. Four in a line makes a grinder that clears a line, five makes a jar that clears one whole kind. Beat the target before the moves run out.</p>
+                <ul class="controls">
+                    <li><b>Touch and mouse</b> Drag a spice toward a neighbour, or tap one and then its neighbour.</li>
+                    <li><b>Keyboard</b> Arrows move, Enter or Space picks, then an arrow swaps. H for a hint.</li>
+                </ul>
+                <div class="chooser">
+                    <button class="step" id="level-down" type="button" aria-label="Previous level">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+                    </button>
+                    <div class="choice" aria-live="polite">
+                        <b id="level-name">Level 1</b>
+                        <span id="level-goal"></span>
+                        <span class="stars" id="level-stars" aria-hidden="true">
+                            <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+                            <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+                            <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+                        </span>
+                    </div>
+                    <button class="step" id="level-up" type="button" aria-label="Next level">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+                <p class="note" id="start-best"></p>
+                <button class="btn primary" id="start" type="button">Play level 1</button>
+            </div>
+        </section>
+
+        <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+            <div class="card">
+                <h2 id="end-title">Out of moves</h2>
+                <p id="end-reason"></p>
+                <div class="stars big" id="end-stars" role="img" aria-label="0 of 3 stars">
+                    <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+                    <svg class="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>
+                </div>
+                <p class="note" id="end-note"></p>
+                <dl class="results">
+                    <div><dt>Score</dt><dd id="end-score">0</dd></div>
+                    <div><dt>Best score</dt><dd id="end-best">0</dd></div>
+                    <div><dt>Level stars</dt><dd id="end-level-stars">0 of 3</dd></div>
+                    <div><dt>All stars</dt><dd id="end-total">0 of 60</dd></div>
+                </dl>
+                <button class="btn primary" id="next" type="button">Next level</button>
+                <button class="btn" id="again" type="button">Play again</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="game.js"></script>
+</body>
+</html>

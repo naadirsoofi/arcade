@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Word Net | Arcade</title>
+    <meta name="description" content="Word Net: a word search you play by sweeping your finger across hidden words in a grid of letters. Fourteen themes, three difficulty levels, a fresh grid every round.">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app" id="app" data-state="ready">
+        <header class="bar">
+            <a class="back" href="../../">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>
+                Arcade
+            </a>
+            <h1 class="name">Word Net</h1>
+        </header>
+
+        <main class="stage">
+            <div class="play" id="play">
+                <div class="hud">
+                    <div class="stat">
+                        <span class="stat-label">Theme</span>
+                        <span class="stat-value" id="theme-name">Ocean</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="time">0:00</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Found</span>
+                        <span class="stat-value" id="found">0/0</span>
+                    </div>
+                </div>
+
+                <div class="grid-wrap">
+                    <div class="grid" id="grid" tabindex="0" role="group" aria-label="Letter grid. Arrow keys move, Enter or Space marks the first and last letter of a word."></div>
+                </div>
+
+                <p class="msg" id="msg" role="status"></p>
+                <ul class="words" id="words" aria-label="Words to find"></ul>
+
+                <div class="actions">
+                    <button class="tool" id="hint-btn" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5"/><path d="M10.5 21h3"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1.2 1.5 1.2 2.5h5.6c0-1 .5-1.8 1.2-2.5A6 6 0 0 0 12 3z"/></svg>
+                        Hint (+15s)
+                    </button>
+                    <button class="tool" id="menu-btn" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+                        Menu
+                    </button>
+                </div>
+            </div>
+
+            <section class="overlay" id="start-screen" aria-labelledby="start-title">
+                <div class="card">
+                    <h2 id="start-title">Cast your net</h2>
+                    <p>Hidden words run through the grid in straight lines. Catch every word on the list as fast as you can.</p>
+                    <ul class="controls">
+                        <li><strong>Touch or mouse:</strong> slide from a word's first letter to its last, or tap the first letter and then the last.</li>
+                        <li><strong>Keyboard:</strong> arrows move, Enter or Space marks the first and last letter, H gives a hint.</li>
+                    </ul>
+                    <label class="field">
+                        <span>Theme</span>
+                        <select id="theme-select"></select>
+                    </label>
+                    <div class="levels" id="levels" role="group" aria-label="Difficulty">
+                        <button class="level" type="button" data-level="easy">Easy</button>
+                        <button class="level" type="button" data-level="medium">Medium</button>
+                        <button class="level" type="button" data-level="hard">Hard</button>
+                    </div>
+                    <p class="level-note" id="level-note"></p>
+                    <button class="primary" id="start-btn" type="button">Start</button>
+                </div>
+            </section>
+
+            <section class="overlay" id="end-screen" aria-labelledby="end-title" hidden>
+                <div class="card">
+                    <p class="new-best" id="new-best" hidden>New best time</p>
+                    <h2 id="end-title">Net full!</h2>
+                    <p class="final" id="end-time">0:00</p>
+                    <dl class="results">
+                        <div><dt>Theme</dt><dd id="end-theme"></dd></div>
+                        <div><dt>Hints used</dt><dd id="end-hints">0</dd></div>
+                        <div><dt id="end-best-label">Best time</dt><dd id="end-best">0:00</dd></div>
+                    </dl>
+                    <button class="primary" id="again-btn" type="button">Play again</button>
+                    <button class="ghost" id="change-btn" type="button">Change theme or level</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="core.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
