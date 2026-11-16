@@ -16,7 +16,6 @@
     const root = byId('game');
     const play = document.querySelector('.play');
     const board = byId('board');
-    const stage = byId('stage');
     const nextButton = byId('next-btn');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -66,6 +65,7 @@
     let sliding = false;
     let slideTimer = 0;
     let swipeFrom = null;
+    let swiped = false;
     let endReadyAt = 0;
 
     // Play time only counts while the tab is visible.
@@ -259,7 +259,10 @@
     };
 
     document.querySelectorAll('.arrow').forEach((button) => {
-        button.addEventListener('click', () => move(button.dataset.dir));
+        button.addEventListener('click', (event) => {
+            // A drag that began on this button has already steered. Keyboard clicks have no pointer behind them.
+            if (event.detail === 0 || !swiped) move(button.dataset.dir);
+        });
     });
 
     byId('undo-btn').addEventListener('click', undo);
@@ -272,23 +275,34 @@
     byId('again-btn').addEventListener('click', () => startLevel(level.level));
     nextButton.addEventListener('click', () => startLevel(level.level + 1));
 
-    stage.addEventListener('pointerdown', (event) => {
-        swipeFrom = { x: event.clientX, y: event.clientY };
+    // Slides fire as the finger moves, from anywhere on the play screen, so one drag can chain several.
+    play.addEventListener('pointerdown', (event) => {
+        if (root.dataset.state !== 'playing' || event.target.closest('button:not(.arrow), a')) return;
+        swiped = false;
+        swipeFrom = { id: event.pointerId, x: event.clientX, y: event.clientY };
+        if (event.target.closest('.arrow')) return;
+        event.preventDefault();
+        play.setPointerCapture(event.pointerId);
     });
 
-    stage.addEventListener('pointerup', (event) => {
-        if (!swipeFrom) return;
+    play.addEventListener('pointermove', (event) => {
+        if (!swipeFrom || event.pointerId !== swipeFrom.id) return;
         const dx = event.clientX - swipeFrom.x;
         const dy = event.clientY - swipeFrom.y;
-        swipeFrom = null;
         if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_MIN) return;
-        if (Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 'right' : 'left');
-        else move(dy > 0 ? 'down' : 'up');
+        const name = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+        // Carrying on in the same direction is still the same slide.
+        if (name !== swipeFrom.last) move(name);
+        swiped = true;
+        swipeFrom = { id: swipeFrom.id, x: event.clientX, y: event.clientY, last: name };
     });
 
-    stage.addEventListener('pointercancel', () => {
-        swipeFrom = null;
-    });
+    const endSwipe = (event) => {
+        if (swipeFrom && event.pointerId === swipeFrom.id) swipeFrom = null;
+    };
+
+    play.addEventListener('pointerup', endSwipe);
+    play.addEventListener('pointercancel', endSwipe);
 
     document.addEventListener('keydown', (event) => {
         if (event.ctrlKey || event.metaKey || event.altKey) return;

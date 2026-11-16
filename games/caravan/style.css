@@ -160,6 +160,10 @@ button:focus-visible {
     color: var(--warn);
 }
 
+.game[data-state="playing"] {
+    touch-action: none;
+}
+
 .board {
     display: flex;
     -webkit-tap-highlight-color: transparent;

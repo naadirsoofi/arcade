@@ -94,6 +94,9 @@ const mazeForDate = (date) => mazeForSeed(...SIZES[(date.getDay() + 6) % 7], Num
 const STORE_KEY = 'arcade.daily-maze.days';
 const STEP_MS = 70;
 const HOLD_DELAY_MS = 180;
+// Finger travel per cell while steering by touch: a share of the cell size, with a floor.
+const STEER_RATIO = 0.6;
+const STEER_MIN_PX = 12;
 const MAX_CELL = 40;
 const KEY_DIRS = {
     ArrowUp: 'up', ArrowRight: 'right', ArrowDown: 'down', ArrowLeft: 'left',
@@ -436,57 +439,52 @@ const startRun = (name, delay) => {
     runTimer = setTimeout(keepGoing, delay);
 };
 
-const boardPoint = (event) => {
-    const rect = canvas.getBoundingClientRect();
-    return { x: (event.clientX - rect.left - wall / 2) / cell, y: (event.clientY - rect.top - wall / 2) / cell };
-};
-
-// Pulls the token toward the pointer one open cell at a time.
-const dragToken = (point) => {
-    for (let guard = 0; guard < 60; guard++) {
-        const dx = point.x - (game.x + 0.5);
-        const dy = point.y - (game.y + 0.5);
-        const horizontal = dx > 0 ? 'right' : 'left';
-        const vertical = dy > 0 ? 'down' : 'up';
-        const wantX = Math.abs(dx) > 0.6;
-        const wantY = Math.abs(dy) > 0.6;
-        const order = Math.abs(dx) > Math.abs(dy)
-            ? [wantX && horizontal, wantY && vertical]
-            : [wantY && vertical, wantX && horizontal];
-        if (!order.some((name) => name && step(name))) return;
-    }
-};
-
-board.addEventListener('pointerdown', (event) => {
-    if (root.dataset.state !== 'playing') return;
+// Finger steering: the token mirrors the finger's movement from wherever it touches down,
+// so the finger never has to cover the maze. Each notch of travel is one cell.
+root.addEventListener('pointerdown', (event) => {
+    if (root.dataset.state !== 'playing' || event.target.closest('button:not(.arrow), a')) return;
+    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    // A press on an arrow button keeps its own behaviour until the finger starts to travel.
+    if (event.target.closest('.arrow')) return;
     event.preventDefault();
     stopRun();
-    const point = boardPoint(event);
-    const nearToken = Math.hypot(point.x - (game.x + 0.5), point.y - (game.y + 0.5)) <= 1.3;
-    pointer = { id: event.pointerId, drag: nearToken, x: event.clientX, y: event.clientY, swiped: false };
-    board.setPointerCapture(event.pointerId);
+    root.setPointerCapture(event.pointerId);
 });
 
-board.addEventListener('pointermove', (event) => {
+root.addEventListener('pointermove', (event) => {
     if (!pointer || event.pointerId !== pointer.id) return;
-    if (pointer.drag) {
-        dragToken(boardPoint(event));
-        return;
+    const notch = Math.max(STEER_MIN_PX, cell * STEER_RATIO);
+    for (let guard = 0; guard < 60; guard++) {
+        const dx = event.clientX - pointer.x;
+        const dy = event.clientY - pointer.y;
+        const horizontal = Math.abs(dx) >= notch && (dx > 0 ? 'right' : 'left');
+        const vertical = Math.abs(dy) >= notch && (dy > 0 ? 'down' : 'up');
+        const order = Math.abs(dx) > Math.abs(dy) ? [horizontal, vertical] : [vertical, horizontal];
+        if (horizontal || vertical) stopRun();
+        const moved = order.find((name) => name && step(name));
+        if (!moved) {
+            // Pushing into a wall must not bank travel, or the token would lag behind a reversal.
+            pointer.x = event.clientX - Math.max(-notch, Math.min(notch, dx));
+            pointer.y = event.clientY - Math.max(-notch, Math.min(notch, dy));
+            return;
+        }
+        // Drop the drift on the other axis so a wobbly finger does not dive into side passages.
+        if (moved === horizontal) {
+            pointer.x += Math.sign(dx) * notch;
+            pointer.y = event.clientY;
+        } else {
+            pointer.y += Math.sign(dy) * notch;
+            pointer.x = event.clientX;
+        }
     }
-    const dx = event.clientX - pointer.x;
-    const dy = event.clientY - pointer.y;
-    if (pointer.swiped || Math.hypot(dx, dy) < 24) return;
-    pointer.swiped = true;
-    const name = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
-    startRun(name, STEP_MS);
 });
 
 const endPointer = (event) => {
     if (pointer && event.pointerId === pointer.id) pointer = null;
 };
 
-board.addEventListener('pointerup', endPointer);
-board.addEventListener('pointercancel', endPointer);
+root.addEventListener('pointerup', endPointer);
+root.addEventListener('pointercancel', endPointer);
 
 document.querySelectorAll('.arrow').forEach((button) => {
     const name = button.dataset.dir;

@@ -354,6 +354,7 @@ main {
 /* Play screen: board on the left, panel on the right */
 
 .play {
+    touch-action: none;
     grid-template-columns: auto 270px;
     grid-template-areas:
         "stage hud"
@@ -399,7 +400,6 @@ main {
     grid-area: stage;
     display: grid;
     place-items: center;
-    touch-action: none;
     user-select: none;
     -webkit-user-select: none;
 }

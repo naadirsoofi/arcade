@@ -140,6 +140,10 @@ textarea:focus-visible {
     font-weight: 500;
 }
 
+.game[data-state="playing"] {
+    touch-action: none;
+}
+
 .board {
     display: flex;
     -webkit-tap-highlight-color: transparent;

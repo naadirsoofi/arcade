@@ -8,6 +8,7 @@ const OASIS_EVERY = 4;
 const OASIS_MIN_CAMELS = 6;
 const OASIS_MS = 9000;
 const POINTS_PER_CAMEL = 2;
+const SWIPE_MIN = 22;
 const TRADE_CAMELS = 3;
 const TRADE_BONUS = 40;
 const END_DELAY_MS = 650;
@@ -548,19 +549,27 @@ const frame = (now) => {
     requestAnimationFrame(frame);
 };
 
-board.addEventListener('pointerdown', (event) => {
-    if (root.dataset.state !== 'playing') return;
+// Steering works from anywhere on the play screen, not just the map.
+root.addEventListener('pointerdown', (event) => {
+    if (root.dataset.state !== 'playing' || event.target.closest('button:not(.arrow), a')) return;
     event.preventDefault();
-    swipe = { id: event.pointerId, x: event.clientX, y: event.clientY };
-    board.setPointerCapture(event.pointerId);
+    const arrow = event.target.closest('.arrow')?.dataset.dir;
+    if (arrow && event.pointerType === 'mouse') {
+        queueTurn(arrow);
+        return;
+    }
+    // A finger that lands on an arrow button may be starting a swipe, so the button waits for the release.
+    swipe = { id: event.pointerId, x: event.clientX, y: event.clientY, arrow, turned: false };
+    if (!arrow) root.setPointerCapture(event.pointerId);
 });
 
-board.addEventListener('pointermove', (event) => {
+root.addEventListener('pointermove', (event) => {
     if (!swipe || event.pointerId !== swipe.id) return;
     const dx = event.clientX - swipe.x;
     const dy = event.clientY - swipe.y;
-    if (Math.hypot(dx, dy) < 22) return;
+    if (Math.hypot(dx, dy) < SWIPE_MIN) return;
     queueTurn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
+    swipe.turned = true;
     // Restart from here so one long drag can chain several turns.
     swipe.x = event.clientX;
     swipe.y = event.clientY;
@@ -570,16 +579,15 @@ const endSwipe = (event) => {
     if (swipe && event.pointerId === swipe.id) swipe = null;
 };
 
-board.addEventListener('pointerup', endSwipe);
-board.addEventListener('pointercancel', endSwipe);
+root.addEventListener('pointerup', (event) => {
+    if (swipe && event.pointerId === swipe.id && swipe.arrow && !swipe.turned) queueTurn(swipe.arrow);
+    endSwipe(event);
+});
+root.addEventListener('pointercancel', endSwipe);
 
 document.querySelectorAll('.arrow').forEach((button) => {
     const name = button.dataset.dir;
-    button.addEventListener('pointerdown', (event) => {
-        event.preventDefault();
-        queueTurn(name);
-    });
-    // Keyboard activation arrives as a click with no pointer behind it.
+    // Presses are handled with the swipes above. Keyboard activation arrives as a click with no pointer behind it.
     button.addEventListener('click', (event) => {
         if (event.detail === 0) queueTurn(name);
     });
